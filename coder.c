@@ -1,9 +1,14 @@
-/*
-Romeo Jung 
-Timothy Lo
-
-coder.c
-*/
+/**
+ * Romeo Jung 
+ * Timothy Lo
+ * 
+ * coder.c
+ *
+ * holds the functionalities
+ * that has to do with altering
+ * coder.
+ *
+ **/
 # include "coder.h"
 # include <stdio.h>
 # include <stdint.h>

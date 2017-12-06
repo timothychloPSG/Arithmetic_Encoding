@@ -1,31 +1,38 @@
-/*
-Romeo Jung
-Timothy Lo
+/**
+ * Romeo Jung
+ * Timothy Lo
+ * 
+ * coder.h
+ * 
+ * the headerfile that
+ * contains the struct itself
+ * and all the static inline
+ * functions for coder.
+ *
+ * the coder includes top, bottom,
+ * counter for pending bits, and
+ * keeps track of the block for output. 
+ *
+ **/
 
-coder.h
-*/
+# include "libfiles.h"
 
 # ifndef _CODER_H
 # define _CODER_H
 
-# ifndef _TOPBOT_TRUEFALSE
-# define TOP true 
-# define BOT false 
-# endif 
+# ifndef _TOPBOT_TRUEFALSE			// most of these defines are
+# define TOP true 				// for functions that require a 
+# define BOT false 				// certain boolean to work. 
+# endif 					// it's better suited for the context understanding.
 
 # ifndef _BLOCK_SETCLEAR
 # define SET true
 # define CLR false
 # endif
 
-# ifndef MAXTOP
-# define MAXTOP (uint16_t)65536
+# ifndef MAXTOP					// signifies that since we're working with 16 bit top's
+# define MAXTOP (uint16_t)65535			// and bottoms, the largest number is 65535.
 # endif
-
-# include <stdlib.h>
-# include <stdio.h>
-# include <stdbool.h>
-# include <math.h>
 
 typedef struct Range coder;
 
@@ -33,11 +40,19 @@ struct Range
 {
 	uint16_t top;				// Holds the top bits 
 	uint16_t bot;				// Holds the bottom bits
-	uint16_t pendingBits;		// Save the pending bits for later
-	uint32_t block;				// Used for the output of bits to the output file
-	uint32_t space;				// How many bits have been encoded into the block
+	uint16_t pendingBits;			// number of pending bits
+	uint32_t block;				// blocks 32 bits at a time to the output
+	uint32_t space;				// How much space is left for bits in the block
 } ;
 
+
+/**
+ * newCoder function.
+ *
+ * malloc's a new struct for usage.
+ *
+ * @return code the coder made.
+ */
 static inline coder *newCoder()
 {
 	coder * code = (coder *)(malloc(sizeof(coder)));
@@ -49,12 +64,29 @@ static inline coder *newCoder()
 	return code;
 }
 
+/**
+ * delCoder function.
+ *
+ * deletes a given coder.
+ *
+ * @param *code the malloc'd instance of the coder
+ */
 static inline void delCoder(coder *code)
 {
 	free(code);
 }
 
-static inline uint8_t getBit(bool top, uint8_t space, coder *code)
+/**
+ * getBit function.
+ *
+ * gets bit from either top or the bottom.
+ * the TOP/BOTTOM define is used for when 
+ * this function is called.
+ *
+ * @param top, bottom, index of the bit, and code struct
+ * @return uint8_t the bit
+ */
+static inline uint8_t getBit(bool top, uint8_t index, coder *code)
 {
 	if (top)
 	{
