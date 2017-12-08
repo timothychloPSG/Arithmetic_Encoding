@@ -1,3 +1,16 @@
+###==================================================
+#
+#
+#	12/7/2017
+#
+#	Makefile
+#
+#	written by Timothy Lo
+#
+#
+#====================================================
+
+
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -Wpedantic
 OBJECTS1 = test test.o

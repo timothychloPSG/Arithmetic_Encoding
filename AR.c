@@ -1,11 +1,24 @@
-/*
-Romeo Jung
-Timothy Lo
+/**
+ * Romeo Jung
+ * Timothy Lo
+ *
+ * 12/7/2017
+ *
+ * AR.c
+ *
+ * Where the encoding and the
+ * decoding functions are.
+ * Depends on the model and coder
+ * functions to change the structs
+ * respectively to encode and decode.
+ *
+ * written by Romeo
+ * debugged by Tim
+ *
+ */
 
-AR.c
-*/
+/** ===================== Libraries ============== **/
 
-// The following header files are necessary for encoding
 # include "AR.h"
 # include "coder.h"
 # include "EDset.h"
@@ -14,39 +27,71 @@ AR.c
 # include <math.h>
 # include <stdlib.h>
 
-static bool in  = false;
-static bool out = false;
-
-void encode(EDset * ED, char c)
+/**
+ * encode function.
+ *
+ * encodes a given char.
+ * expecting a null character
+ * at the end of the stream.
+ *
+ * @param mod the continuing model
+ * to encode from the input given
+ *
+ * @param c the char given to be 
+ * encoded next
+ *
+ */
+void encode(Model *mod, FILE *f, char c)
 {
-	uint8_t top = getTop(ED);
-	uint8_t bot = getBot(ED);
-	uint32_t total = ED->total;
-	uint32_t segBot = getSegBot(ED, c);
-	uint32_t segTop = segTop + getCharTop(ED, c);
+	uint8_t top = getTop(mod);
+	uint8_t bot = getBot(mod);
+	uint32_t total = mod->total;
+	uint32_t segBot = getSegBot(mod, c);
+	uint32_t segTop = segTop + getCharTop(mod, c);
 	uint8_t newTop = calcRange(top, bot, total, segTop);
 	uint8_t newBot = calcRange(top, bot, total, segBot);
+
 	updateRange(ED, newTop - 1, newBot, c);
 }
 
-void cleanup (EDset *ED);
+/**
+ * cleanup function.
+ *
+ * cleans up after encoding.
+ * it ties up ends, frees the model,
+ * then closes the output file given.
+ *
+ * @param mod the model
+ *
+ * @param f the file to write out 
+ * final values to
+ */
+void cleanup (Model *mod, FILE *f);
 {
 	
 }
 
-int main(int argc, char *argv[])
+/**
+ * decode function.
+ *
+ * decodes from the number given.
+ * returns by how many spaces we shifted
+ * by changing the value inside shift, an
+ * int pointer.
+ *
+ * @param mod the model
+ *
+ * @param number the number to compare
+ * to top and bottom in the model
+ *
+ * @param shift the int pointer to signify
+ * how many bits we're shifting the new
+ * number to.
+ *
+ * @return the decoded char
+ *
+ */
+char decode(Model *mod, uint32_t number, int *shift)
 {
-	int fileIn = 0;
 
-	int c;
-	while ((c = getopt(argc, argv, "-pvi:o:")) != -1)
-	{
-		switch (c)
-		{
-		    case 'i': { inputFile = strdup(optarg); break; }
-		    case 'o': { outputFile = strdup(optarg); break; }
-		    case 'v': { verbose = true; break; }
-		    case 'p': { print = true; break; }
-		}
-	}
 }
