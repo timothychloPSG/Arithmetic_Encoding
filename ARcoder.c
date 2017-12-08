@@ -1,3 +1,15 @@
+/**
+ * Romeo Jung
+ * Timothy Lo
+ *
+ * 12/7/2017
+ *
+ * ARcoder.c
+ * 
+ * written by Tim
+ * debugged by Romeo
+ */
+
 /*
 
 Work on the IO for the encode and decode, 
