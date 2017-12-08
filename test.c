@@ -1,14 +1,13 @@
 
-# include <stdio.h>
-# include <stdint.h>
-# include <stdlib.h> 
-# include <stdbool.h>
-# include <math.h>
+# include "libfiles.h"
 # include "coder.h"
 # include "model.h"
 
 int main(void)
 {
+
+
+
 	printf("Creating a new code\n");
 	Coder *code = newCoder();
 	Model *model = newModel();
