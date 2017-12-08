@@ -8,36 +8,45 @@ EDset.h
 # ifndef _MODEL_H_
 # define _MODEL_H_
 
-# include <stdint.h>
-# include <stdlib.h>
-# include <stdio.h>
+# include "libfiles.h"
+# include "coder.h"
 
-typedef struct counts Model;
+typedef struct Counts Model;
 
-struct counts 
+struct Counts 
 {
-	coder * code;
-	uint32_t * freq;
+	Coder *range;
+	uint32_t *freq;
 	uint32_t total;
 } ;
 
+Model *newModel();
+
 static inline void delModel(Model *d)
 {
-	delCoder(d->code);
+	delCoder(d->range);
 	free(d->freq);
 	free(d);
 }
 
-void updateRange(Model *ED, uint8_t top, uint8_t bot);
+static inline void initFreq(uint32_t *c)
+{
+	for(int i = 0; i < 256; i++)
+	{
+		c[i] = 1;
+	}
+}
+
+void updateRange(Model *ED, uint8_t top, uint8_t bot, char c);
 
 static inline uint8_t getTop(Model *h)
 {
-	return (h->code->top);
+	return ((h->range)->top);
 }
 
 static inline uint8_t getBot(Model *h)
 {
-	return (h->code->bot);
+	return ((h->range)->bot);
 }
 
 static inline uint32_t getSegBot(Model *ED, char c)
@@ -51,5 +60,7 @@ static inline uint32_t getSegBot(Model *ED, char c)
 }
 static inline uint32_t getCharTop(Model *ED, char c)
 {
-	return ED->freq[c];
+	return ED->freq[(int)c];
 }
+
+# endif
