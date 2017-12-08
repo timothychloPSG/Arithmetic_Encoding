@@ -21,7 +21,7 @@ coder.h
 # endif
 
 # ifndef MAXTOP
-# define MAXTOP (uint16_t)65536
+# define MAXTOP (uint16_t)65535
 # endif
 
 typedef struct Range Coder;
@@ -57,11 +57,11 @@ static inline uint8_t getBit(bool top, uint8_t index, Coder *code)
 {
 	if (top)
 	{
-		return (code->top >> (3 - index) & 1); 	//	Ask later on if the space in parameters is to be used for code->space
+		return (code->top >> (15 - index) & 1); 	//	Ask later on if the space in parameters is to be used for code->space
 	} 
 	else
 	{
-		return (code->bot >> (3 - index) & 1);
+		return (code->bot >> (15 - index) & 1);
 	}
 }
 
@@ -69,11 +69,11 @@ static inline void set(bool top, uint8_t index, Coder *code)
 {
 	if (top)
 	{
-		code -> top |= (1 << (15 - index));
+		(code -> top) |= (1 << (15 - index));
 	}
 	else
 	{
-		code -> bot |= (1 << (15 - index));
+		(code -> bot) |= (1 << (15 - index));
 	}
 }
 
@@ -81,11 +81,11 @@ static inline void clr(bool top, uint8_t index, Coder *code)
 {
 	if (top)
 	{
-		code -> top &= (MAXTOP ^ (1 << (15 - index)));
+		(code->top) &= (MAXTOP ^ (1 << (15 - index)));
 	}
 	else
 	{
-		code -> bot &= (MAXTOP ^ (1 << (15 - index)));
+		(code -> bot) &= (MAXTOP ^ (1 << (15 - index)));
 	}
 }
 
@@ -93,16 +93,20 @@ static inline void chBlock (bool sett, Coder *code)
 {
 	if (code-> space < 1)
 	{
-		code -> space = 32;
-		code -> block = 0;
+		printf("chBlock full\n");
+		(code->space) = 32;
+		(code->block) = 0;
 	}
+	printf("Code->space: %u\n", code->space);
 	if (sett)
 	{
-		code -> block |= ( 1 << (code->space - 1));
+		printf("sett is true\n");
+		(code->block) = (code->block) | (1 << (code->space - 1));
 	}
 	else
 	{
-		code -> block &= (MAXTOP ^ (code->space - 1));
+		printf("sett is false\n");
+		(code->block) = (code->block) & (MAXTOP ^ (code->space - 1));
 	}
 	(code -> space)-=1;
 }
