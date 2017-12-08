@@ -27,6 +27,6 @@ void updateRange(Model *ED, uint8_t top, uint8_t bot, char c)
 	code->top  = top;
 	code->bot  = bot;
 	updateStatus(code);
-	(ED->freq[(int)c])++;
+	(ED->freq[(uint8_t)c])++;
 	(ED->total)++;
 }

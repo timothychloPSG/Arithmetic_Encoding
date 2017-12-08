@@ -60,7 +60,7 @@ static inline uint32_t getSegBot(Model *ED, char c)
 }
 static inline uint32_t getCharTop(Model *ED, char c)
 {
-	return ED->freq[(int)c];
+	return ED->freq[(uint8_t)c];
 }
 
 # endif
