@@ -39,7 +39,7 @@ struct Counts
 //** ========== function headers =========== **//
 
 Model *newModel();
-void updateRange( Model *, uint8_t, uint8_t, char);
+void updateRange( Model *, FILE *, uint16_t, uint16_t, char);
 
 //** ========== static inline functions ====== **//
 

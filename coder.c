@@ -34,7 +34,7 @@ void updateStatus(Coder * code, FILE *f)
 {
 	uint16_t newtop = 0;
 	uint16_t newbot = 0;
-	uint8_t writtenbit = 0;
+	uint8_t writtenbits = 0;
 
 	bool output = true;
 

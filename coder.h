@@ -53,7 +53,7 @@ struct Range
 
 /** ================ function headers ====================== **/
 
-void updateStatus(Coder *);
+void updateStatus(Coder *, FILE *);
 
 /** =============== static inline functions ================ **/
 
