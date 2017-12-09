@@ -57,7 +57,7 @@ Model *newModel()
  *
  * @param c the character being encoded
  */
-void updateRange(Model *ED, uint8_t top, uint8_t bot, char c)
+void updateRange(Model *ED, uint16_t top, uint16_t bot, char c)
 {
 	Coder *code = ED->range;
 	code->top  = top;
