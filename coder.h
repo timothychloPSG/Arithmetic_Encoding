@@ -201,11 +201,12 @@ static inline void clr(bool top, uint8_t index, Coder *code)
  * Has to include file *f later for writing
  *
  */
-static inline void chBlock (bool sett, Coder *code)
+static inline void chBlock (bool sett, FILE *f, Coder *code)
 {
 
 	if (code-> space < 1)							// if there are no more spaces left
-	{									// (will output something here)
+	{
+										// write block to file
 		(code->space) = 8;						// reset block space to 8
 		(code->block) = 0;						// reset block to 0
 	}
