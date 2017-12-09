@@ -23,6 +23,16 @@
 # include "coder.h"
 # include "model.h"
 
+
+//** =============== function headers ================= **//
+
+void encode(Model *, FILE *, char);
+void cleanup(Model *, FILE *);
+char decode(Model *, uint32_t, int *);
+
+
+//** =============== static inlines ==================== **//
+
 /**
  * calcRange function.
  *
@@ -51,7 +61,7 @@ static inline uint16_t calcRange(uint8_t top, uint8_t bot, uint32_t total, uint3
 						// for range calculations.
 	uint32_t diff = top - bot;		// take the difference (the range)
 	diff *= acc;				// multiply it by the accumulated 
-	diff = Math.ceil(diff/total);		// divide by the total count of the characters
+	diff = ceil(diff/total);		// divide by the total count of the characters
 	diff += bot;				// and add the bottom back in for actual range.
 
 	return (uint16_t) diff;

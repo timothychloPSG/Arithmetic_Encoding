@@ -68,8 +68,14 @@ void encode(Model *mod, FILE *f, char c)
  */
 void cleanup (Model *mod, FILE *f)
 {
-	 delModel(mod);
-	// fclose(f);
+	delModel(mod);
+	int i = fclose(f);
+
+	if(i == EOF)
+	{
+		printf("something went wrong");
+		exit(1);
+	}
 }
 
 /**
@@ -92,7 +98,14 @@ void cleanup (Model *mod, FILE *f)
  * @return the decoded char
  *
  */
-char decode(Model *mod, uint32_t number, int *shift)
+char decode(Model *m, uint32_t number, int *shift)
 {
 
+	(m->range)->top = (m->range)->top;
+	number = number;
+	*shift = *shift;
+
+	return 'c';
+
 }
+
