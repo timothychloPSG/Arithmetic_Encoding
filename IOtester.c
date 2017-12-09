@@ -11,21 +11,7 @@
  */
 
 
-# include <math.h>
-# include <unistd.h>
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <fcntl.h>
-
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdbool.h>
-# include <stdint.h>
-
-# include <errno.h>
-# include <string.h>
-# include <ctype.h>
-# include <getopt.h>
+# include "libfiles.h"
 
 int main(int argc, char* argv[])
 {
@@ -35,7 +21,7 @@ int main(int argc, char* argv[])
 	bool decode = false;
 	int option = 0;
 	FILE *inputFile;
-	//FILE *outputFile;
+	FILE *outputFile;
 
 	// getopt will process the input taken in from the command line by the user
 	while ((option = getopt(argc, argv, "edi:o:")) != -1)
@@ -77,28 +63,35 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	// This part is kinda just bullshit for now
-	if (output)
+	if (encode == false && decode == false)
 	{
-		printf("There is some input for output");
+		fprintf(stderr, "[ARGUMENT ERROR] Neither Encode nor Decode flag raised\n");
+		exit(1);
 	}
-	if (encode && decode)
+	if (encode)
 	{
-		printf("Encode and Decode are both true");
+		printf("Encode is true\n");
+		//Obviously this will run encode
+	}
+	if (decode)
+	{
+		printf("Decode is true\n");
+		//Obviously this will run decode
 	}
 	
+	//-----------------------------------------------------------------------------
+	// This part will read in each byte of an input file and store it into a buffer
+	//-----------------------------------------------------------------------------
 	inputFile = fopen(input, "rb");	
 	if (inputFile == NULL)
 	{
 		fputs ("File error",stderr); exit (1);
 	}
-
 	// This part will get the size of the inputFile
 	fseek (inputFile , 0 , SEEK_END);
 	long lSize = ftell(inputFile);
 	rewind (inputFile);
 	printf("The size of the file is %lu\n", lSize);
-
 	// Create a bufer the size of the inputFile to store the information read from it
 	char *buffer = (char *)malloc(sizeof(char)*lSize);
 	if (buffer == NULL)
@@ -113,7 +106,24 @@ int main(int argc, char* argv[])
 		fputs ("Reading error",stderr); 
 		exit (3);
 	}
+	//-----------------------------------------------------------------------------
 
+
+
+	//-----------------------------------------------------------------------------
+	// This part will write the things in the buffer to the output file
+	//-----------------------------------------------------------------------------
+	outputFile = fopen(output, "wb");
+	if (outputFile == NULL)
+	{
+		fputs("File Error",stderr);
+		exit (1);
+	}
+	fwrite(buffer, sizeof(char), lSize, outputFile);
+	//-----------------------------------------------------------------------------
+
+
+	fclose(outputFile);
 	fclose(inputFile);
 	free(buffer);
 	return 0;
