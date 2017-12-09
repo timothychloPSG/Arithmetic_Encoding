@@ -21,7 +21,7 @@
 
 # include "AR.h"
 # include "coder.h"
-# include "EDset.h"
+# include "model.h"
 
 # include <stdio.h>
 # include <math.h>
@@ -47,11 +47,11 @@ void encode(Model *mod, FILE *f, char c)
 	uint8_t bot = getBot(mod);
 	uint32_t total = mod->total;
 	uint32_t segBot = getSegBot(mod, c);
-	uint32_t segTop = segBot + getCharTop(mod, c);
+	uint32_t segTop = segBot + getCharCount(mod, c);
 	uint8_t newTop = calcRange(top, bot, total, segTop);
 	uint8_t newBot = calcRange(top, bot, total, segBot);
 
-	updateRange(ED, newTop - 1, newBot, c);
+	updateRange(mod, f, newTop - 1, newBot, c);
 }
 
 /**
@@ -66,10 +66,10 @@ void encode(Model *mod, FILE *f, char c)
  * @param f the file to write out 
  * final values to
  */
-void cleanup (Model *mod, FILE *f);
+void cleanup (Model *mod, FILE *f)
 {
 	 delModel(mod);
-	 fclose(f);
+	// fclose(f);
 }
 
 /**
