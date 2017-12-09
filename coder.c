@@ -32,18 +32,21 @@
  */
 void updateStatus(Coder * code)
 {
-	uint16_t current = 0;								// current cursor on top and bottom -- because we'll be
-											// shifting bits for output and we don't want to skip a bit
+	uint16_t newtop = 0;
+	uint16_t newbot = 0;
+	uint8_t writtenbit = 0;
+
+	bool output = true;
 
 	for (int i = 0; i < 16; i++)							// looping through 16 bits only -- the original top and bottom
 	{										// so that we don't forever go through the newly added bits
 
-		uint8_t top = getBit(TOP, current, code);				// Get the value of the top bit
-		uint8_t bot = getBit(BOT, current, code);				// Get the value of the bottom bit
+		uint8_t top = getBit(TOP, i, code);					// get the value of the top bit
+		uint8_t bot = getBit(BOT, i, code);					// get the value of the bottom bit
 
 
 		//** ======= for converging bits ========== **//
-		if(top == bot)
+		if(top == bot && output)
 		{
 			if (bot)							// convergence towards 1
 			{
@@ -64,22 +67,70 @@ void updateStatus(Coder * code)
 				}
 				code->pendingBits = 0;
 			}
-			code->top = code->top << 1;					// shift both by 1, since we don't need to 
-			code->bot = code->bot << 1;					// carry the outputted bit anymore
-			set(TOP, 15, code);						// set what we just added to 1 in top's case
-											// because we want to be adding a 1.
+		}
+		
+		//** ========== if bits converge in the middle ====== **//
+		else if(top == bot)
+		{
+
+			newtop = newtop << 1;
+			newbot = newbot << 1;
+
+			if(top)
+			{
+				newtop |= 1;
+				newbot |= 1;
+			}
+
+			writtenbits++;
 		}
 
 		//** ========== for pending bits ========== **//
 		else if( !top && bot )
 		{
+			output = false;							// output mode off
 			code->pendingBits+=1;						// increment the number of pending bits
-			set(TOP, current, code);					// since when we backfill it, top will fill
-			clr(BOT, current, code);					// with one and bottom with zero, so we just
-											// switch the current bits.
-			current += 1;							// increment the cursor because we haven't shifted 
-											// the number but we don't want to get stuck here
+		}
+
+		//** ========= if the bits differ ========= **//
+		else
+		{
+			output = false;
+
+			newtop = newtop << 1;
+			newbot = newbot << 1;
+
+			if(top) //is 1
+			{
+				newtop |= 1;
+			}
+			
+			if(bot) //is 1
+			{
+				newbot |= 1;
+			}
+
+			writtenbits++;
+
+
+			
 		}
 
 	}
+
+	writtenbits = 16 - writtenbits;
+
+	for(int i = 0; i < writtenbits; i++)
+	{
+		newtop = newtop << 1;
+		newbot = newbot << 1;
+
+		newtop |= 1;
+	}
+
+	code->top = newtop;
+	code->bot = newbot;
+
+
+
 }
