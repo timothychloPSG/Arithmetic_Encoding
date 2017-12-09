@@ -47,7 +47,7 @@ void encode(Model *mod, FILE *f, char c)
 	uint8_t bot = getBot(mod);
 	uint32_t total = mod->total;
 	uint32_t segBot = getSegBot(mod, c);
-	uint32_t segTop = segTop + getCharTop(mod, c);
+	uint32_t segTop = segBot + getCharTop(mod, c);
 	uint8_t newTop = calcRange(top, bot, total, segTop);
 	uint8_t newBot = calcRange(top, bot, total, segBot);
 
