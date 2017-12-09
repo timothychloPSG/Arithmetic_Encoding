@@ -51,21 +51,21 @@ void updateStatus(Coder * code)
 			if (bot)							// convergence towards 1
 			{
 				chBlock(SET, code);					// set a bit in the block
-				for (int j = 0; j < (code->pendingBits); j++)		// and for the rest of the pending bits
+				for (int j = 0; j < (code->pending); j++)		// and for the rest of the pending bits
 				{							// (if there are any) clear more bits
 					chBlock(CLR, code);
 				}
 
-				code->pendingBits = 0;					// reset counter for pending bits
+				code->pending = 0;					// reset counter for pending bits
 			}
 			else								// convergence towards 0
 			{
 				chBlock(CLR, code);					// clear a bit in the block
-				for (int j = 0; j < (code->pendingBits); j++)		// deal with pending bits
+				for (int j = 0; j < (code->pending); j++)		// deal with pending bits
 				{
 					chBlock(SET, code);
 				}
-				code->pendingBits = 0;
+				code->pending = 0;
 			}
 		}
 		
@@ -89,7 +89,7 @@ void updateStatus(Coder * code)
 		else if( !top && bot )
 		{
 			output = false;							// output mode off
-			code->pendingBits+=1;						// increment the number of pending bits
+			code->pending+=1;						// increment the number of pending bits
 		}
 
 		//** ========= if the bits differ ========= **//
