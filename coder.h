@@ -218,7 +218,6 @@ static inline void chBlock (bool sett, FILE *f, Coder *code)
 	}
 	else									// for clearing the bit
 	{
-		printf("sett is false\n");
 		(code->block) = (code->block) & (MAXTOP ^ (code->space - 1));
 	}
 

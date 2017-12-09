@@ -57,13 +57,17 @@ char decode(Model *, uint32_t, int *);
  */
 static inline uint16_t calcRange(uint16_t top, uint16_t bot, uint32_t total, uint32_t acc)
 {
-	printf("top %d, bot %d, total %d, acc %d", top, bot, total, acc);
-	top = top + 1;				// since we're converting it to "actual numbers"
+	uint32_t numberTop = top + 1;		// since we're converting it to "actual numbers"
 						// for range calculations.
-	uint32_t diff = top - bot;		// take the difference (the range)
+	float diff = numberTop - bot;		// take the difference (the range)
+
 	diff *= acc;				// multiply it by the accumulated 
+
 	diff = ceil(diff/total);		// divide by the total count of the characters
+
 	diff += bot;				// and add the bottom back in for actual range.
+
+	printf("\n\n%f\n\n", diff);
 
 	return (uint16_t) diff;
 }

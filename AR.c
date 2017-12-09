@@ -49,8 +49,8 @@ void encode(Model *mod, FILE *f, char c)
 	uint32_t total = mod->total;
 	uint32_t segBot = getSegBot(mod, c);
 	uint32_t segTop = segBot + getCharCount(mod, c);
-	uint8_t newTop = calcRange(top, bot, total, segTop);
-	uint8_t newBot = calcRange(top, bot, total, segBot);
+	uint16_t newTop = calcRange(top, bot, total, segTop);
+	uint16_t newBot = calcRange(top, bot, total, segBot);
 
 	printf("newtop newbot %d\n %d\n", newTop, newBot);
 
