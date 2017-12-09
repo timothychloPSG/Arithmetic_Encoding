@@ -12,7 +12,7 @@
 
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Wpedantic
+CFLAGS = -Wall -Wextra -Werror -pedantic -std=c99
 OBJECTS1 = test test.o
 OBJECTS = coder.o model.o
 
