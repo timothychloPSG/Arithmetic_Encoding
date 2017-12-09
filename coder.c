@@ -30,7 +30,7 @@
  *
  * @param code the coder struct
  */
-void updateStatus(Coder * code)
+void updateStatus(Coder * code, FILE *f)
 {
 	uint16_t newtop = 0;
 	uint16_t newbot = 0;
@@ -50,20 +50,20 @@ void updateStatus(Coder * code)
 		{
 			if (bot)							// convergence towards 1
 			{
-				chBlock(SET, code);					// set a bit in the block
+				chBlock(SET, f, code);					// set a bit in the block
 				for (int j = 0; j < (code->pending); j++)		// and for the rest of the pending bits
 				{							// (if there are any) clear more bits
-					chBlock(CLR, code);
+					chBlock(CLR, f, code);
 				}
 
 				code->pending = 0;					// reset counter for pending bits
 			}
 			else								// convergence towards 0
 			{
-				chBlock(CLR, code);					// clear a bit in the block
+				chBlock(CLR, f, code);					// clear a bit in the block
 				for (int j = 0; j < (code->pending); j++)		// deal with pending bits
 				{
-					chBlock(SET, code);
+					chBlock(SET, f, code);
 				}
 				code->pending = 0;
 			}
