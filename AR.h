@@ -55,8 +55,9 @@ char decode(Model *, uint32_t, int *);
  * @return new top or bottom
  *
  */
-static inline uint16_t calcRange(uint8_t top, uint8_t bot, uint32_t total, uint32_t acc)
+static inline uint16_t calcRange(uint16_t top, uint16_t bot, uint32_t total, uint32_t acc)
 {
+	printf("top %d, bot %d, total %d, acc %d", top, bot, total, acc);
 	top = top + 1;				// since we're converting it to "actual numbers"
 						// for range calculations.
 	uint32_t diff = top - bot;		// take the difference (the range)

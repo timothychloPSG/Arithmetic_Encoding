@@ -43,13 +43,16 @@
  */
 void encode(Model *mod, FILE *f, char c)
 {
-	uint8_t top = getTop(mod);
-	uint8_t bot = getBot(mod);
+	printf("dsgsdf");
+	uint16_t top = getTop(mod);
+	uint16_t bot = getBot(mod);
 	uint32_t total = mod->total;
 	uint32_t segBot = getSegBot(mod, c);
 	uint32_t segTop = segBot + getCharCount(mod, c);
 	uint8_t newTop = calcRange(top, bot, total, segTop);
 	uint8_t newBot = calcRange(top, bot, total, segBot);
+
+	printf("newtop newbot %d\n %d\n", newTop, newBot);
 
 	updateRange(mod, f, newTop - 1, newBot, c);
 }
