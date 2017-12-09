@@ -79,7 +79,7 @@ static inline void initFreq(uint32_t *c)
  *
  * @param h the model to be looked at
  *
- * @return the frequency 
+ * @return the current top
  *
  */
 static inline uint32_t getTop(Model *h)
@@ -98,7 +98,7 @@ static inline uint32_t getTop(Model *h)
  *
  * @param h the model to be looked at
  *
- * @return the frequency bottom
+ * @return the current bottom
  *
  */
 static inline uint32_t getBot(Model *h)
