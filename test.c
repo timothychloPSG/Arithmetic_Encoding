@@ -5,9 +5,6 @@
 
 int main(void)
 {
-
-
-
 	printf("Creating a new code\n");
 	Coder *code = newCoder();
 	Model *model = newModel();

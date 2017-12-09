@@ -1,0 +1,15 @@
+
+NOTES FOR TIM: 
+
+Work on the IO for the encode and decode, 
+which basically means taking the file, reading in byte by byte and then 
+store the characters in an array, and make sure that you store the 
+number referring to the file somewhere so that you can pass it to romeo 
+for writing to in encode
+
+
+the function cleanup will probably include the output file as well as the model
+for its parameters. this will free the model, and it will also close the file, and
+most likely that's about it for cleanup function within AR.h
+
+make sure that you give romeo a uin32_t number that represents for decode, the 32 bits for each character that will be encoded in for the future
