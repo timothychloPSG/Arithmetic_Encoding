@@ -53,7 +53,7 @@ struct Range
 
 /** ================ function headers ====================== **/
 
-void updateStatus(Coder *, FILE *);
+void updateStatus(Coder *, FILE *, uint8_t *, uint8_t *);
 void printStatus(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, bool, uint16_t, uint8_t, uint8_t);
 
 /** =============== static inline functions ================ **/
@@ -209,6 +209,7 @@ static inline void chBlock (bool sett, FILE *f, Coder *code)
 	{
 
 		fwrite(&(code->block), sizeof(uint8_t), 1, f);			// write block to file
+		printf("wrote to file \n");
 		(code->space) = 8;						// reset block space to 8
 		(code->block) = 0;						// reset block to 0
 	}

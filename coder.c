@@ -30,13 +30,17 @@
  *
  * @param code the coder struct
  */
-void updateStatus(Coder * code, FILE *f)
+void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 {
 	uint16_t newtop = 0;
 	uint16_t newbot = 0;
 	uint8_t writtenbits = 0;
 
+	(*outbits) = 0;
+	(*pendingbits) = 0;
+
 	bool output = true;
+	bool pending = true;
 
 	for (int i = 0; i < 16; i++)							// looping through 16 bits only -- the original top and bottom
 	{										// so that we don't forever go through the newly added bits
@@ -51,9 +55,14 @@ void updateStatus(Coder * code, FILE *f)
 			if (bot)							// convergence towards 1
 			{
 				chBlock(SET, f, code);					// set a bit in the block
+				printf("writing 1\n");
+				(*outbits) += 1;
 				for (int j = 0; j < (code->pending); j++)		// and for the rest of the pending bits
 				{							// (if there are any) clear more bits
+
+					printf("pending\n");
 					chBlock(CLR, f, code);
+					(*outbits) += 1;
 				}
 
 				code->pending = 0;					// reset counter for pending bits
@@ -61,9 +70,13 @@ void updateStatus(Coder * code, FILE *f)
 			else								// convergence towards 0
 			{
 				chBlock(CLR, f, code);					// clear a bit in the block
+				printf("writing 0\n");
+				(*outbits) += 1;
 				for (int j = 0; j < (code->pending); j++)		// deal with pending bits
 				{
+					printf("pending\n");
 					chBlock(SET, f, code);
+					(*outbits) += 1;
 				}
 				code->pending = 0;
 			}
@@ -86,11 +99,20 @@ void updateStatus(Coder * code, FILE *f)
 		}
 
 		//** ========== for pending bits ========== **//
-		else if( top == 0 && bot == 1 )
+		else if( top == 0 && bot == 1 && pending)
 		{
+			(*pendingbits) += 1;
 
 			output = false;							// output mode off
 			code->pending+=1;						// increment the number of pending bits
+
+			uint8_t checktop = getBit(TOP, i+1, code);
+			uint8_t checkbot = getBit(BOT, i+1, code);
+
+			if(checktop != 0 && checkbot != 1)
+			{
+				pending = false;
+			}
 		}
 
 		//** ========= if the bits differ ========= **//
@@ -117,7 +139,7 @@ void updateStatus(Coder * code, FILE *f)
 		}
 
 		// for debugging purposes
-		// printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
+		printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
 
 	}
 

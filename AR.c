@@ -70,6 +70,8 @@ void encode(Model *mod, FILE *f, char c)
  */
 void cleanup (Model *mod, FILE *f)
 {
+
+
 	delModel(mod);
 	int i = fclose(f);
 
