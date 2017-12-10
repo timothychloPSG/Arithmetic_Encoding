@@ -41,7 +41,7 @@
  * encoded next
  *
  */
-void encode(Model *mod, FILE *f, char c, uint8_t *outbits, uint8_t pending)
+void encode(Model *mod, FILE *f, char c, uint8_t *outbits, uint8_t *pending)
 {
 	uint16_t top = getTop(mod);
 	uint16_t bot = getBot(mod);
@@ -81,11 +81,11 @@ void cleanup (Model *mod, FILE *f)
 
 	for(int i = 0; i < totalout; i++)
 	{
-		uint8_t bit = getBit(BOT, i, (mod->code));
-		chBlock(bit, f, mod->code);
+		uint8_t bit = getBit(BOT, i, (mod->range));
+		chBlock(bit, f, mod->range);
 	}
 
-	fwrite(&(code->block), sizeof(uint8_t), 1, f);
+	fwrite(&((mod->range)->block), sizeof(uint8_t), 1, f);
 
 	delModel(mod);
 	int i = fclose(f);
