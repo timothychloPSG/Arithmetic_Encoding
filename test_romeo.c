@@ -31,7 +31,6 @@ int main(void)
 	printf("\n\n\n================================ g =====================\n\n\n");
 	encode(m, output, 'g', (&outbits), (&pending));
 
-	cleanup(m, output); 
 	printf("DONE ==================================================== \n\n\n\n\n");
 
 	printf("coder total : %d\n", (m->total));
@@ -59,6 +58,6 @@ int main(void)
 	}
 	
 
-	delModel(m);
+	cleanup(m, output);  
 	return 0;
 }
