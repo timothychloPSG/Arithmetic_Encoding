@@ -43,7 +43,7 @@ void updateStatus(Coder * code, FILE *f)
 
 		uint8_t top = getBit(TOP, i, code);					// get the value of the top bit
 		uint8_t bot = getBit(BOT, i, code);					// get the value of the bottom bit
-
+		
 
 		//** ======= for converging bits ========== **//
 		if(top == bot && output)
@@ -86,8 +86,9 @@ void updateStatus(Coder * code, FILE *f)
 		}
 
 		//** ========== for pending bits ========== **//
-		else if( !top && bot )
+		else if( top == 0 && bot == 1 )
 		{
+
 			output = false;							// output mode off
 			code->pending+=1;						// increment the number of pending bits
 		}
@@ -95,6 +96,7 @@ void updateStatus(Coder * code, FILE *f)
 		//** ========= if the bits differ ========= **//
 		else
 		{
+
 			output = false;
 
 			newtop = newtop << 1;
@@ -111,10 +113,11 @@ void updateStatus(Coder * code, FILE *f)
 			}
 
 			writtenbits++;
-
-
 			
 		}
+
+		// for debugging purposes
+		// printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
 
 	}
 
@@ -134,3 +137,10 @@ void updateStatus(Coder * code, FILE *f)
 
 
 }
+
+void printStatus( uint16_t top, uint16_t bot, uint16_t writtenbits, uint16_t newtop, uint16_t newbot, bool outputmode, uint16_t pending, uint8_t topbit, uint8_t botbit)
+{
+	printf("\n\n\n\ttop bit: %d\n\tbottom bit:%d\n\n\n\nCurrent Top: %d\nCurrent Bottom: %d\nWritten bits: %d\nNew Top: %d\nNew Bottom: %d\nOutput mode: %d\npending: %d\n\n", topbit, botbit, top, bot, writtenbits, newtop, newbot, outputmode, pending);
+}
+
+

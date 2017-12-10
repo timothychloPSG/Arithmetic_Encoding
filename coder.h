@@ -54,6 +54,7 @@ struct Range
 /** ================ function headers ====================== **/
 
 void updateStatus(Coder *, FILE *);
+void printStatus(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, bool, uint16_t, uint8_t, uint8_t);
 
 /** =============== static inline functions ================ **/
 

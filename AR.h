@@ -67,7 +67,7 @@ static inline uint16_t calcRange(uint16_t top, uint16_t bot, uint32_t total, uin
 
 	diff += bot;				// and add the bottom back in for actual range.
 
-	printf("\n\n%f\n\n", diff);
+	// printf("\n\n%f\n\n", diff);
 
 	return (uint16_t) diff;
 }
