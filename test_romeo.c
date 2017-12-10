@@ -9,6 +9,8 @@
 
 int main(void)
 {
+
+	/**
 	Model *m = newModel();
 
 	printf("%d\n", (m->range)->top);
@@ -30,6 +32,22 @@ int main(void)
 	printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n", (m->range)->top, (m->range)->bot);
 	printf("\n\n\n================================ g =====================\n\n\n");
 	encode(m, output, 'g', (&outbits), (&pending));
+
+	printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n", (m->range)->top, (m->range)->bot);
+	        printf("\n\n\n================================ d =====================\n\n\n");
+		        encode(m, output, 'd', (&outbits), (&pending));
+
+	printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n", (m->range)->top, (m->range)->bot);
+	        printf("\n\n\n================================ c =====================\n\n\n");
+		        encode(m, output, 'c', (&outbits), (&pending));
+
+	printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n", (m->range)->top, (m->range)->bot);
+	        printf("\n\n\n================================ d =====================\n\n\n");
+		        encode(m, output, 'd', (&outbits), (&pending));
+
+	printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n", (m->range)->top, (m->range)->bot);
+	        printf("\n\n\n================================ b =====================\n\n\n");
+		        encode(m, output, 'b', (&outbits), (&pending));
 
 	printf("DONE ==================================================== \n\n\n\n\n");
 
@@ -59,5 +77,20 @@ int main(void)
 	
 
 	cleanup(m, output);  
+	*/
+
+	Model *m = newModel();
+	uint16_t number = 24832;
+	(m->freq)['b'] += 1;
+	(m->total) += 1;
+	uint8_t outbits = 0;
+	uint8_t pending = 0;
+
+
+	uint8_t ch = decode(m, number, &outbits, &pending);
+
+	printf("%c\n", ch);
+	printf("%d\n%d\n", outbits, pending);
+
 	return 0;
 }

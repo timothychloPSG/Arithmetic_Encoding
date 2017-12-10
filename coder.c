@@ -60,7 +60,7 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 				for (int j = 0; j < (code->pending); j++)		// and for the rest of the pending bits
 				{							// (if there are any) clear more bits
 
-					printf("pending\n");
+					// printf("pending\n");
 					chBlock(CLR, f, code);
 				}
 
@@ -73,7 +73,7 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 				(*outbits) += 1;
 				for (int j = 0; j < (code->pending); j++)		// deal with pending bits
 				{
-					printf("pending\n");
+					// printf("pending\n");
 					chBlock(SET, f, code);
 				}
 				code->pending = 0;
@@ -137,7 +137,7 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 		}
 
 		// for debugging purposes
-		printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
+		// printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
 
 	}
 

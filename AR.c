@@ -139,8 +139,9 @@ char decode(Model *m, uint32_t number, uint8_t *outbits, uint8_t *pending)
 	ch -= 2;
 
 
-	uint16_t newbot = followRange;
-	acc = acc - (m->freq)[ch];
+	acc =  getSegBot(m, ch);
+	uint16_t newbot = calcRange(getTop(m), getBot(m), m->total, acc);
+	acc = acc + (m->freq)[ch];
 	uint16_t newtop = calcRange(getTop(m), getBot(m), m->total, acc);
 
 	updateRange(m, NULL, newtop, newbot, ch, outbits, pending);
