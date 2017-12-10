@@ -28,7 +28,7 @@
 
 void encode(Model *, FILE *, char, uint8_t *, uint8_t *);
 void cleanup(Model *, FILE *);
-char decode(Model *, uint32_t, int *);
+char decode(Model *, uint32_t, uint8_t *, uint8_t *);
 
 
 //** =============== static inlines ==================== **//

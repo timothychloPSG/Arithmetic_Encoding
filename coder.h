@@ -208,8 +208,11 @@ static inline void chBlock (bool sett, FILE *f, Coder *code)
 	if (code-> space < 1)							// if there are no more spaces left
 	{
 
-		fwrite(&(code->block), sizeof(uint8_t), 1, f);			// write block to file
-		printf("wrote to file \n");
+		if(f != NULL)
+		{
+			fwrite(&(code->block), sizeof(uint8_t), 1, f);			// write block to file
+		}
+
 		(code->space) = 8;						// reset block space to 8
 		(code->block) = 0;						// reset block to 0
 	}
