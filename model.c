@@ -57,14 +57,18 @@ Model *newModel()
  *
  * @param c the character being encoded
  */
-void updateRange(Model *ED, FILE *f, uint16_t top, uint16_t bot, char c)
+void updateRange(Model *ED, FILE *f, uint16_t top, uint16_t bot, char c, uint8_t *outbits, uint8_t *pending)
 {
 	Coder *code = ED->range;
 	code->top  = top;
 	code->bot  = bot;
 
-	updateStatus(code, f);
+	updateStatus(code, f, outbits, pending);
 
 	(ED->freq[(uint8_t)c])++;
 	(ED->total)++;
 }
+
+
+
+
