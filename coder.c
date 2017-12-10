@@ -62,7 +62,6 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 
 					printf("pending\n");
 					chBlock(CLR, f, code);
-					(*outbits) += 1;
 				}
 
 				code->pending = 0;					// reset counter for pending bits
@@ -76,7 +75,6 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 				{
 					printf("pending\n");
 					chBlock(SET, f, code);
-					(*outbits) += 1;
 				}
 				code->pending = 0;
 			}

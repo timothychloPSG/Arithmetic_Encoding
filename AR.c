@@ -41,7 +41,7 @@
  * encoded next
  *
  */
-void encode(Model *mod, FILE *f, char c, uint8_t *outbits, uint8_t *pending)
+void encode(Model *mod, FILE *f, char c)
 {
 	uint16_t top = getTop(mod);
 	uint16_t bot = getBot(mod);
@@ -51,16 +51,20 @@ void encode(Model *mod, FILE *f, char c, uint8_t *outbits, uint8_t *pending)
 	uint16_t newTop = calcRange(top, bot, total, segTop);
 	uint16_t newBot = calcRange(top, bot, total, segBot);
 
+	uint8_t tos = 0;
+	uint8_t toss = 0;
+
 	// printf("newtop newbot %d\n %d\n", newTop, newBot);
 
-	updateRange(mod, f, newTop - 1, newBot, c, outbits, pending);
+	updateRange(mod, f, newTop - 1, newBot, c, &tos, &toss);
 }
 
 /**
  * cleanup function.
  *
  * cleans up after encoding.
- * it ties up ends, frees the model,
+ * it encodes a null character,
+ * ties up ends, frees the model,
  * then closes the output file given.
  *
  * @param mod the model
@@ -71,6 +75,20 @@ void encode(Model *mod, FILE *f, char c, uint8_t *outbits, uint8_t *pending)
 void cleanup (Model *mod, FILE *f)
 {
 
+	uint8_t outbits = 0;
+	uint8_t pending = 0;
+
+	encode(mod, f, '\0', &outbits, &pending);
+
+	uint8_t totalout = 16 - (outbits + pending);
+
+	for(int i = 0; i < totalout; i++)
+	{
+		uint8_t bit = getBit(BOT, i, (mod->code));
+		chBlock(bit, f, mod->code);
+	}
+
+	fwrite(&(code->block), sizeof(uint8_t), 1, f);
 
 	delModel(mod);
 	int i = fclose(f);
