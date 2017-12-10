@@ -41,7 +41,7 @@
  * encoded next
  *
  */
-void encode(Model *mod, FILE *f, char c)
+void encode(Model *mod, FILE *f, char c, uint8_t *outbits, uint8_t pending)
 {
 	uint16_t top = getTop(mod);
 	uint16_t bot = getBot(mod);
@@ -51,12 +51,9 @@ void encode(Model *mod, FILE *f, char c)
 	uint16_t newTop = calcRange(top, bot, total, segTop);
 	uint16_t newBot = calcRange(top, bot, total, segBot);
 
-	uint8_t tos = 0;
-	uint8_t toss = 0;
-
 	// printf("newtop newbot %d\n %d\n", newTop, newBot);
 
-	updateRange(mod, f, newTop - 1, newBot, c, &tos, &toss);
+	updateRange(mod, f, newTop - 1, newBot, c, outbits, pending);
 }
 
 /**
