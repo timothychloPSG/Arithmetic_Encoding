@@ -17,21 +17,10 @@
  *
  */
 
-# include <math.h>
-# include <unistd.h>
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <fcntl.h>
-
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdbool.h>
-# include <stdint.h>
-
-# include <errno.h>
-# include <string.h>
-# include <ctype.h>
-# include <getopt.h>
+# include "model.h"
+# include "coder.h"
+# include "libfiles.h"
+# include "AR.h"
 
 
 uint16_t parse(uint32_t *buffer, uint8_t cursor)
@@ -52,12 +41,12 @@ int main(int argc, char* argv[])
 {
 	char input[1024];
 	char output[1024];
-	// bool encode = false;
-	// bool decode = false;
+	bool encoding = false;
+	bool decoding = false;
 	int option = 0;
 	FILE *inputFile;
 	FILE *outputFile;
-	// getopt will process the input taken in from the command line by the user
+	// getopt processes command line input
 	while ((option = getopt(argc, argv, "edi:o:")) != -1)
 	{
 		switch(option)
@@ -65,27 +54,23 @@ int main(int argc, char* argv[])
 			// Copy the name of the input file 
 			case 'i':
 			{
-				strcpy(input, optarg); 
-				break;
+				strcpy(input, optarg); break;
 			}
 			// Copy the name of the output file
 			case 'o':
 			{
-				strcpy(output, optarg); 
-				break;
+				strcpy(output, optarg); break;
 			}
-			// if e flag is set, encode the text
-			// case 'e':
-			// {
-			// 	encode = true; 
-			// 	break;
-			// }
-			// // if d flag is set, decode the ciphertext
-			// case 'd':
-			// {
-			// 	decode = true; 
-			// 	break;
-			// }
+			//if e flag is set, encode the text
+			case 'e':
+			{
+				encoding = true; break;
+			}
+			// if d flag is set, decode the ciphertext
+			case 'd':
+			{
+				decoding = true; break;
+			}
 			// print to stderr if unknown symbol
 			case '?':
 			{
@@ -97,21 +82,6 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	// if (encode == false && decode == false)
-	// {
-	// 	fprintf(stderr, "[ARGUMENT ERROR] Neither Encode nor Decode flag raised\n");
-	// 	exit(1);
-	// }
-	// if (encode)
-	// {
-	// 	printf("Encode is true\n");
-	// 	//Obviously this will run encode
-	// }
-	// if (decode)
-	// {
-	// 	printf("Decode is true\n");
-	// 	//Obviously this will run decode
-	// }
 	
 	//-----------------------------------------------------------------------------
 	// This part will read in each byte of an input file and store it into a buffer
@@ -141,16 +111,56 @@ int main(int argc, char* argv[])
 		fputs ("Reading error",stderr); 
 		exit (3);
 	}
+	char buffering[lSize];
+	memcpy(buffering, buffer, lSize);
 	//-----------------------------------------------------------------------------
-
-	if (encode)
+	// Open the output file 
+	//-----------------------------------------------------------------------------	
+	outputFile = fopen(output, "wb");
+	if (outputFile == NULL)
 	{
+		fputs("File Error",stderr);
+		exit (1);
+	}
+	//-----------------------------------------------------------------------------
+	// Encode if flag is raised
+	//-----------------------------------------------------------------------------
+	if (encoding)
+	{	
+		uint8_t outbits = 0;
+		uint8_t pending = 0;
 		Model *encodeModel = newModel();
-		
+		for(int i = 0; i < lSize; i++)
+		{
+			encode(encodeModel, outputFile, buffering[i], &outbits, &pending);
+		}
+		cleanup(encodeModel, outputFile);
 	}
 	//-----------------------------------------------------------------------------
 	// This next part will run the function that Romeo wants me to do (see whiteboard photo)
 	//-----------------------------------------------------------------------------
+	if (decoding )
+	{
+		uint32_t tracker = 0;
+		uint8_t i = 0;
+		while (i < 4)
+		{
+			tracker = stitch(tracker, buffering[i]);	// Stitch together the first 4 chars in tracker
+			i++;
+		}
+		uint8_t replacement = buffering[i]
+		uint16_t cursor = 0;
+		uint16_t charBuffer = parse(tracker, cursor);
+		for(int j = 0; j < lSize, j++)
+		{
+			uint16_t charBuffer = parse(tracker, cursor);
+			char something = decode(charBuffer, )
+			cursor++;
+			if (cursor == 8)
+			{
+				
+			}
+	}
 	char buffering[lSize];
 	memcpy(buffering, buffer, lSize);
 	// AS LONG AS YOU DONT GET PAST LSIZE + 1, YOU WONT HIT THE NULL TERMINATOR 
@@ -187,32 +197,10 @@ int main(int argc, char* argv[])
 			}
 			i++;
 		}
-	
-		// Parse the first 16 bits of the buffer
-		// char something = put the 16 bits through the decode function
-		// if cursor = 8
-			// then stitch the next character onto the buffer
-			// subtract 8 from cursor
-			// if buffering[i+1] == 0
-				// replacement = 0
-			// replacement = buffering[i+1]
-		// increment cursor by 1
 	}
 
-	//-----------------------------------------------------------------------------
-	// This part will write the things in the buffer to the output file
-	//-----------------------------------------------------------------------------
-	outputFile = fopen(output, "wb");
-	if (outputFile == NULL)
-	{
-		fputs("File Error",stderr);
-		exit (1);
-	}
-	fwrite(buffer, sizeof(char), lSize, outputFile);
-	//-----------------------------------------------------------------------------
 
 
-	fclose(outputFile);
 	fclose(inputFile);
 	free(buffer);
 	return 0;
