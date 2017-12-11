@@ -74,16 +74,36 @@ void cleanup (Model *mod, FILE *f)
 
 	uint8_t outbits = 0;
 	uint8_t pending = 0;
+	uint8_t prevbit = 0;
 
 	encode(mod, f, '\0', &outbits, &pending);
 
-	uint8_t totalout = 16 - (outbits + pending);
+	uint8_t bit = 0;
+	for(int i = 0; i < 16; i++)
+	{
+		prevbit = bit;
+		bit = getBit(BOT, i, (mod->range));
+		printf("%u",bit);
+		if(i == 1 && pending != 0)
+		{
+			for(int j = i; j < (i+pending); j++)
+			{
+				printf("%u", !prevbit);
+				chBlock(!prevbit, f, (mod->range));
+			}
 
+		}
+		chBlock(bit, f, mod->range);
+	}
+
+	//uint8_t totalout = 16 - (outbits + pending);
+
+	/*
 	for(int i = 0; i < totalout; i++)
 	{
 		uint8_t bit = getBit(BOT, i, (mod->range));
 		chBlock(bit, f, mod->range);
-	}
+	}*/
 
 	fwrite(&((mod->range)->block), sizeof(uint8_t), 1, f);
 
@@ -120,18 +140,18 @@ void cleanup (Model *mod, FILE *f)
 char decode(Model *m, uint32_t number, uint8_t *outbits, uint8_t *pending)
 {
 
-	printf("\n\n\t\tnumber: %u\n", number);
 	uint16_t acc = 0;
 	uint16_t range = 0;
 	uint8_t ch = 0;
 
-	while(number > range)							// compares all bottoms until one of them's bigger than the number
+	while(number >= range)							// compares all bottoms until one of them's bigger than the number
 	{
 		acc = getSegBot(m, ch);
 		range = calcRange(getTop(m), getBot(m), m->total, acc);
 		ch += 1;
 	}
 
+	//printf("\n\n\n\n\n\n\n%c\n\n\n\n\n\n\n", ch);
 	ch -= 2;
 
 
@@ -140,7 +160,7 @@ char decode(Model *m, uint32_t number, uint8_t *outbits, uint8_t *pending)
 	acc = acc + (m->freq)[ch];
 	uint16_t newtop = calcRange(getTop(m), getBot(m), m->total, acc);
 
-	updateRange(m, NULL, newtop, newbot, ch, outbits, pending);
+	updateRange(m, NULL, newtop-1, newbot, ch, outbits, pending);
 
 	printf("\n\n\n%d\n\n", m->total);
 

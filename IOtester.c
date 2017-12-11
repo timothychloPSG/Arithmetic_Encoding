@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 		Model *encodeModel = newModel();
 		for(int i = 0; i < lSize; i++)
 		{
-			printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n\t\tbuffering : %d\n\n", (encodeModel->range)->top, (encodeModel->range)->bot, buffering[i]); 
+			//printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n\t\tbuffering : %d\n\n", (encodeModel->range)->top, (encodeModel->range)->bot, buffering[i]); 
 			encode(encodeModel, outputFile, buffering[i], &outbits, &pending);
 		}
 		cleanup(encodeModel, outputFile);
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
 
 	if (decoding)
 	{
-		//Model *decodingModel = newModel();
+		Model *decodingModel = newModel();
 
 		uint32_t tracker = 0;
 		uint8_t i = 0;
@@ -132,59 +132,87 @@ int main(int argc, char* argv[])
 			tracker = stitch(tracker, buffering[i]);	// Stitch together the first 4 chars in tracker
 			i++;
 		}
-		printf("first tracker: %u\n", tracker);
+		//printf("first tracker: %u\n", tracker);
 		uint8_t replacement = buffering[i];
-		printf("first replacement: %u\n", replacement); 
+		//printf("first replacement: %u\n", replacement); 
 		uint16_t cursor = 0;
+		uint8_t outbits = 0;
+		uint8_t pending = 0;
+		uint16_t charBuffer = 0;
 
-		//for(int j = 5; j < 7; j++)//lSize; j++)
-		//{
-			uint8_t outbits = 0;
-			uint8_t pending = 0;
-			uint16_t charBuffer = parse(tracker, cursor);
+		while(true)//for(int j = 5; j < lSize; j++)
+		{
+			charBuffer = parse(tracker, cursor);
 
-			printf("\n\n%u\n\n", charBuffer);
+			//printf("\n\n%u\n\n", charBuffer);
 
-				if (pending != 0) 	// Pending bits present from previous decode
+			/**
+			if(j == 7)
+			{
+				break;
+			}*/
+
+			if (pending != 0) 	// Pending bits present from previous decode
+			{
+				uint16_t buffer = 0;
+				uint8_t bit = get(charBuffer, 0); //write the first character 
+				if (bit)
 				{
-					uint16_t buffer = 0;
-					uint8_t bit = get(charBuffer, 0); //write the first character 
-					if (bit)
-					{
-						setBit(&buffer, 0);
-					}
-					uint8_t cursor2 = 1;
+					setBit(&buffer, 0);
+				}
+				uint8_t cursor2 = 1;
 
-					for(uint8_t x = 1; x < 16; x++)
+				for(uint8_t x = 1; x < 16; x++)
+				{
+					if(pending < x)
 					{
-						if(pending < x)
-						{
-							bit = get(charBuffer, x);
-							if (bit)
-							{
-								setBit(&buffer, cursor2);
-							}
-							cursor2++;
-						}
-					}		
-					
-					for(uint8_t x = (cursor + 16); x < (cursor + 16 + pending); x++)
-					{
-						bit = get32(tracker, x);
-						// printf("Bit %u\n", bit);
-						if(bit)
+						bit = get(charBuffer, x);
+						if (bit)
 						{
 							setBit(&buffer, cursor2);
 						}
 						cursor2++;
-					}	
-					charBuffer = buffer;
-				} 
-			//char decodedChar = decode(decodingModel, charBuffer, &outbits, &pending);
-			//printf("decodedChar: %c", decodedChar);
-			//fwrite(&decodedChar, sizeof(char), 1, outputFile);
+					}
+				}		
+					
 
+				for(uint8_t x = (cursor + 16); x < (cursor + 16 + pending); x++)
+				{
+					bit = get32(tracker, x);
+					// printf("Bit %u\n", bit);
+					if(bit)
+					{
+						setBit(&buffer, cursor2);
+					}
+					cursor2++;
+				}	
+				charBuffer = buffer;
+
+
+			}
+
+			//printf("\n\n\t\tnew buffer : %d\n\n", charBuffer);
+
+			/*
+			if(j == 8)
+			{
+				break;
+			}*/
+
+			char decodedChar = decode(decodingModel, charBuffer, &outbits, &pending);
+
+			if(decodedChar == '\0')
+			{
+				break;
+			}
+			printf("%c", decodedChar);
+			fwrite(&decodedChar, sizeof(char), 1, outputFile);
+
+			//printf("\n\noutbits : %d\n\n", outbits);
 			cursor+=outbits;
+
+
+
 			if (cursor >= 8)
 			{
 				cursor-=8;
@@ -197,11 +225,15 @@ int main(int argc, char* argv[])
 				{
 					replacement = buffering[i+1];
 				}
-				printf("new replacement: %u\n", replacement);
+				//printf("new replacement: %u\n", replacement);
 				i++;
 			}
+
 		}
-	//}
+	
+	
+	}
+
 	fclose(inputFile);
 	free(buffer);
 	return 0;
