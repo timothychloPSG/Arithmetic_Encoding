@@ -40,7 +40,6 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 	(*pendingbits) = 0;
 
 	bool output = true;
-	bool pending = true;
 
 
 	for (int i = 0; i < 16; i++)							// looping through 16 bits only -- the original top and bottom
@@ -75,7 +74,7 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 				(*outbits) += 1;
 				for (int j = 0; j < (code->pending); j++)		// deal with pending bits
 				{
-					// printf("pending\n");
+					printf("pending\n");
 					chBlock(SET, f, code);
 				}
 				code->pending = 0;
@@ -99,20 +98,11 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 		}
 
 		//** ========== for pending bits ========== **//
-		else if( top == 0 && bot == 1 && pending)
+		else if( top == 0 && bot == 1 && !output && writtenbits == 1)
 		{
 			(*pendingbits) += 1;
 
-			output = false;							// output mode off
 			code->pending+=1;						// increment the number of pending bits
-
-			uint8_t checktop = getBit(TOP, i+1, code);
-			uint8_t checkbot = getBit(BOT, i+1, code);
-
-			if(checktop != 0 && checkbot != 1)
-			{
-				pending = false;
-			}
 		}
 
 		//** ========= if the bits differ ========= **//
@@ -142,7 +132,6 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 		printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
 
 	}
-
 
 	writtenbits = 16 - writtenbits;
 

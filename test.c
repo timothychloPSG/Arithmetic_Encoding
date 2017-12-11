@@ -19,7 +19,7 @@ int main(void)
 		uint8_t bit = get(number, 0); //write the first character 
 		if (bit)
 		{
-			setbit(&buffer, 0);
+			setBit(&buffer, 0);
 		}
 		uint8_t cursor2 = 1;
 
@@ -31,7 +31,7 @@ int main(void)
 				bit = get(number, x);
 				if (bit)
 				{
-					setbit(&buffer, cursor2);
+					setBit(&buffer, cursor2);
 				}
 				cursor2++;
 			}
@@ -44,7 +44,7 @@ int main(void)
 			printf("Bit %u\n", bit);
 			if(bit)
 			{
-				setbit(&buffer, cursor2);
+				setBit(&buffer, cursor2);
 			}
 			cursor2++;
 		}
