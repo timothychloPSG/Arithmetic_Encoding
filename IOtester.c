@@ -21,21 +21,7 @@
 # include "coder.h"
 # include "libfiles.h"
 # include "AR.h"
-
-
-uint16_t parse(uint32_t *buffer, uint8_t cursor)
-{
-	uint16_t charBuffer = (*buffer >> (32 - (cursor + 16))); 	// Isolate the chunk that you want
-	*buffer = *buffer >> (cursor + 16);							// Move over the isolated block to the end 
-	return charBuffer;
-}
-
-uint32_t stitch(uint32_t preEx, uint8_t newBits)
-{
-	preEx = preEx << 8;			// Shift the block by 8 bits for the next char
-	preEx = preEx | newBits;	// Store the 8 bits in the space shifted 
-	return preEx;				// Return the block
-}
+# include "IOtester.h"
 
 int main(int argc, char* argv[])
 {
@@ -151,55 +137,26 @@ int main(int argc, char* argv[])
 		uint8_t replacement = buffering[i]
 		uint16_t cursor = 0;
 		uint16_t charBuffer = parse(tracker, cursor);
-		for(int j = 0; j < lSize, j++)
+		for(int j = 5; j < lSize; j++)
 		{
 			uint16_t charBuffer = parse(tracker, cursor);
 			char something = decode(charBuffer, )
 			cursor++;
 			if (cursor == 8)
 			{
-				
+				cursor-=8;
+				tracker = stitch(tracker, replacement);
+				if(buffering[i+1] == 0)
+				{
+					replacement = 0;
+				}
+				else
+				{
+					replacement = buffering[i+1];
+				}
+				i++;
 			}
 	}
-	char buffering[lSize];
-	memcpy(buffering, buffer, lSize);
-	// AS LONG AS YOU DONT GET PAST LSIZE + 1, YOU WONT HIT THE NULL TERMINATOR 
-	uint32_t tracker = 0;
-	uint8_t i = 0;
-	while (i < 4)
-	{
-		tracker = stitch(tracker, buffering[i]);	// Stitch together the first 4 chars in tracker
-		i++;
-	}
-	uint8_t replacement = buffering[i];			// Replacement should be equal to the 5th element in the buffer now
-	printf("%u\n", replacement);
-	uint16_t cursor = 0;
-	uint16_t charBuffer = parse(&tracker, cursor);
-	printf("charBuffer: %u\n", charBuffer);
-	printf("tracker: %u\n", tracker);
-
-	for(int j = 0; j < lSize; j++)
-	{
-		uint16_t charBuffer = parse(tracker, cursor);
-		char something = decode(charBuffer);//other parameters)
-		cursor++;
-		if (cursor == 8)
-		{
-			cursor-=8;
-			tracker = stitch(tracker, replacement);
-			if (buffering[i+1] == 0)
-			{
-				replacement = 0;
-			}
-			else
-			{
-				replacement = buffering[i+1];
-			}
-			i++;
-		}
-	}
-
-
 
 	fclose(inputFile);
 	free(buffer);
