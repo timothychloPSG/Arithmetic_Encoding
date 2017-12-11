@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
 		{
 			charBuffer = parse(tracker, cursor);
 
-			//printf("\n\n%u\n\n", charBuffer);
+			printf("\n\n%u\n\n", charBuffer);
 
 			/**
 			if(j == 7)
@@ -191,7 +191,7 @@ int main(int argc, char* argv[])
 
 			}
 
-			//printf("\n\n\t\tnew buffer : %d\n\n", charBuffer);
+			printf("\n\n\t\tnew buffer : %d\n\n", charBuffer);
 
 			/*
 			if(j == 8)

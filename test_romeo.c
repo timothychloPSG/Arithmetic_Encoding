@@ -83,22 +83,28 @@ int main(void)
 	cleanup(m, output); 
 	*/
 
-	/**
-	 * decode things
 	Model *m = newModel();
-	uint16_t number = 24832;
-	(m->freq)['b'] += 1;
-	(m->total) += 1;
+	uint32_t number = 0;
+
+	number = stitch(number, 'a');
+	number = stitch(number, 'b');
+	number = stitch(number, 'c');
+	number = stitch(number, 'd');
+
+	uint16_t compare = parse(number, 0);
+
 	uint8_t outbits = 0;
 	uint8_t pending = 0;
 
-
+	for(int i = 0; i < 
 	uint8_t ch = decode(m, number, &outbits, &pending);
 
 	printf("%c\n", ch);
 	printf("%d\n%d\n", outbits, pending);
-	*/
 
+
+
+	/*
 	uint32_t preEx = 0;
 
 	preEx = stitch(preEx, 'a');
@@ -129,5 +135,6 @@ int main(void)
 
 	printf("parsed : %d\n", parsed);
 
+	*/
 	return 0;
 }
