@@ -39,6 +39,21 @@ static inline uint32_t stitch(uint32_t preEx, uint8_t newBits)
 	return preEx;
 }
 
+static inline uint8_t get(uint16_t number, uint8_t index)
+{
+	return (number >> (15 - index) & 1);
+}
+
+static inline void set(uint16_t *number, uint8_t index)
+{
+	(*number) = (*number) | (1 << (15 - index)) ; 
+}
+
+static inline void clr(uint16_t *number, uint8_t index)
+{
+	(*number) = (*number) & (MAXTOP ^ (1 << (15 - index)));
+}
+
 
 # endif
 
