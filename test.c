@@ -1,36 +1,55 @@
-
 # include "libfiles.h"
-# include "coder.h"
 # include "model.h"
+# include "coder.h"
+# include "AR.h"
+# include "IOtester.h"
+
 
 int main(void)
 {
-	printf("Creating a new code\n");
-	Coder *code = newCoder();
-	Model *model = newModel();
-	
-	// Sets the top to 1111
 
-	code->top = 65535;
-	code->bot = 0;
+	uint32_t charBuffer = 325346560;
+	uint16_t number = 13894;
+	uint8_t pending = 2; 
+	uint8_t cursor = 4;
 
-	set(BOT,0,code);
+	if (pending > 0) 	// Pending bits present from previous decode
+	{
+		uint16_t buffer = 0;
+		uint8_t bit = get(number, 0); //write the first character 
+		if (bit)
+		{
+			setbit(&buffer, 0);
+		}
+		uint8_t cursor2 = 1;
 
-	printf("%d", code->bot);
 
-
-	// Sets the bot to 1100 0000 0000 0000
-	
-	printf("Beginning to updateStatus\n");
-
-	updateStatus(code);
-
-	printf("Now printing out the results of updateStatus\n");
-	printf("Top: %u\n", code->top);
-	printf("Bot: %u\n",code->bot);
-	printf("Block: %u\n",code->block);
-	delCoder(code);
-	delModel(model);
+		for(int x = 1; x < 16; x++)
+		{
+			if(pending < x)
+			{
+				bit = get(number, x);
+				if (bit)
+				{
+					setbit(&buffer, cursor2);
+				}
+				cursor2++;
+			}
+		}
+		printf("Buffer: %u\n Cursor2: %d\n", buffer, (cursor2));		
+		
+		for(int x = (cursor + 16); x < (cursor + 16 + pending); x++)
+		{
+			bit = get32(charBuffer, x);
+			printf("Bit %u\n", bit);
+			if(bit)
+			{
+				setbit(&buffer, cursor2);
+			}
+			cursor2++;
+		}
+		printf("Buffer: %u\n", buffer);		
+	} 
 	return 0;
 }
 

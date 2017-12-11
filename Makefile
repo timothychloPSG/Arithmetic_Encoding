@@ -18,19 +18,19 @@ OBJECTS1 = test test.o
 OBJECTS2 = IOtester IOtester.o 
 
 .PHONY	:	all
-all	:	coder.o model.o AR.o IOtester.o IOtester  #test.o test
+all	:	coder.o model.o AR.o IOtester.o test.o IOtester test
 
-#test	:
-#	$(CC) $(CFLAGS) -o $(OBJECTS1) $(OBJECTS) -lm
+test	:
+	$(CC) $(CFLAGS) -o $(OBJECTS1) $(OBJECTS) -lm
+
+test.o 	:	test.c
+	$(CC) $(CFLAGS) -c test.c 
 
 IOtester:	
 	$(CC) $(CFLAGS) -o $(OBJECTS2) $(OBJECTS) -lm
 
 IOtester.o 	:	IOtester.c
 	$(CC) $(CFLAGS) -c IOtester.c
-
-test.o 	:	test.c
-	$(CC) $(CFLAGS) -c test.c 
 
 model.o 	:	model.c
 	$(CC) $(CFLAGS) -c model.c
@@ -43,6 +43,6 @@ AR.o 	:	AR.c
 
 .PHONY	:	clean
 clean	:       
-	rm -f $(OBJECTS1) $(OBJECTS) IOtester.o IOtester
+	rm -f $(OBJECTS2) $(OBJECTS1) $(OBJECTS) 
 
 #valgrind --leak-check=full [NAME OF EXECUTABLE]

@@ -23,6 +23,7 @@
 # include "AR.h"
 # include "IOtester.h"
 
+
 int main(int argc, char* argv[])
 {
 	char input[1024];
@@ -68,21 +69,18 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	
-	//-----------------------------------------------------------------------------
-	// This part will read in each byte of an input file and store it into a buffer
-	//-----------------------------------------------------------------------------
+
 	inputFile = fopen(input, "rb");	
 	if (inputFile == NULL)
 	{
 		fputs ("File error",stderr); exit (1);
 	}
-	// This part will get the size of the inputFile
+
 	fseek (inputFile , 0 , SEEK_END);
 	long lSize = ftell(inputFile);
 	rewind (inputFile);
 
-	// Create a bufer the size of the inputFile to store the information read from it
+
 	char *buffer = (char *)malloc(sizeof(char)*lSize);
 	if (buffer == NULL)
 	{
@@ -90,7 +88,7 @@ int main(int argc, char* argv[])
 		exit (2);
 	}
 
-	// Read the bytes from the inputFile into buffer
+
 	ssize_t result = fread(buffer, 1, lSize, inputFile);
 	if (result != lSize) 
 	{
@@ -99,9 +97,7 @@ int main(int argc, char* argv[])
 	}
 	char buffering[lSize];
 	memcpy(buffering, buffer, lSize);
-	//-----------------------------------------------------------------------------
-	// Open the output file 
-	//-----------------------------------------------------------------------------	
+
 	outputFile = fopen(output, "wb");
 	if (outputFile == NULL)
 	{
@@ -122,10 +118,8 @@ int main(int argc, char* argv[])
 		}
 		cleanup(encodeModel, outputFile);
 	}
-	//-----------------------------------------------------------------------------
-	// This next part will run the function that Romeo wants me to do (see whiteboard photo)
-	//-----------------------------------------------------------------------------
-	if (decoding )
+
+	if (decoding)
 	{
 		Model *decodingModel = newModel();
 		uint32_t tracker = 0;
@@ -135,28 +129,51 @@ int main(int argc, char* argv[])
 			tracker = stitch(tracker, buffering[i]);	// Stitch together the first 4 chars in tracker
 			i++;
 		}
-		uint8_t replacement = buffering[i]
+		uint8_t replacement = buffering[i];
 		uint16_t cursor = 0;
+
 		for(int j = 5; j < lSize; j++)
 		{
 			uint8_t outbits = 0;
 			uint8_t pending = 0;
 			uint16_t charBuffer = parse(tracker, cursor);
-			if (pending > 0) 	// Pending bits present from previous decode
-			{
-				uint16_t buffer = 0;
-				for(int x = 1; x < 16; i++)
+				if (pending > 0) 	// Pending bits present from previous decode
 				{
-					if(pending < x)
+					uint16_t buffer = 0;
+					uint8_t bit = get(charBuffer, 0); //write the first character 
+					if (bit)
 					{
-						bit = (charBuffer >> (15 - i) & 1);
+						setbit(&buffer, 0);
 					}
-				}
-				//write the first character 
-			} 
-			char decodedChar = decode(decodingModel, charBuffer, &outbits, &pending);
-			fwrite(&decodedChar, sizeof(char), 1, outputFile);
-			// write decodedChar to the character
+					uint8_t cursor2 = 1;
+
+					for(int x = 1; x < 16; x++)
+					{
+						if(pending < x)
+						{
+							bit = get(charBuffer, x);
+							if (bit)
+							{
+								setbit(&buffer, cursor2);
+							}
+							cursor2++;
+						}
+					}		
+					
+					for(int x = (cursor + 16); x < (cursor + 16 + pending); x++)
+					{
+						bit = get32(tracker, x);
+						printf("Bit %u\n", bit);
+						if(bit)
+						{
+							setbit(&buffer, cursor2);
+						}
+						cursor2++;
+					}	
+					charBuffer = buffer;
+				} 
+			char *decodedChar = decode(decodingModel, charBuffer, &outbits, &pending);
+			fwrite(decodedChar, sizeof(char), 1, outputFile);
 			cursor+=outbits;
 			if (cursor >= 8)
 			{
@@ -172,8 +189,8 @@ int main(int argc, char* argv[])
 				}
 				i++;
 			}
+		}
 	}
-
 	fclose(inputFile);
 	free(buffer);
 	return 0;
