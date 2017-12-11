@@ -1,0 +1,45 @@
+
+
+
+
+
+
+	Usage of ARcoder:
+
+	-e for encode
+	-d for decode
+	-i for input file (for both options)
+	-o for output file (for both options)
+
+	It works on a short string with duplicate letters but it fails the mostlyA text file.
+	I haven't tried it on other things, but it gets stuck in a loop while continuing through
+	it and I am almost certainly confident that it is how I process pending bits and the 
+	shfting the input to be compared to the top and the bottom for range to decode a letter.
+
+	Brief explanation of work split:
+
+	I mostly worked on encode and decode functions, and Tim worked on the IO things as well as
+	stitch and parse for decode.
+
+	Brief explanation about encode:
+
+	I change the model through updateStatus and updateRange. updateRange is in model.c and it calls
+	updateStatus after changing the top and the bottom to the right values then increments the
+	model by whatever character encoded.
+
+	Brief explanation about decode:
+
+	I parse a small section of the output that is 16 bits and pass it to compare it with the ranges
+	that I can produce from the pre-existing model. After I compare, I output the right bits (except
+	the output is NULL and I really don't) and count how many bits I output by and shift where we're 
+	looking at in the stream of encoded letters so that we can get to the next letter. Stitching is
+	so that we can look at 4 letters per time, and we parse 16 bits out of it each time by using parse.
+
+	Other comments:
+
+	I know Matthew suggested that we have our buffer for output as uint16_t or uint32_t, but I thought
+	it would be best if we were printing out chars and we could read it, so we made it uint8_t.
+	Encode and decode will probably work if you give it a string of a short length or probably length
+	less than 61 (not tested) but not over that.
+
+
