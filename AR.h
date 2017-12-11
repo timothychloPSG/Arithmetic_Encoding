@@ -59,13 +59,18 @@ static inline uint16_t calcRange(uint16_t top, uint16_t bot, uint32_t total, uin
 {
 	uint32_t numberTop = top + 1;		// since we're converting it to "actual numbers"
 
-	// printf("\n\n\n\t\t\ttop : %d\n\t\t\tbot: %d\n\t\t\tacc: %d\n\n\n\n", numberTop, bot, acc);
+	printf("\n\n\n\t\t\ttop : %d\n\t\t\tbot: %d\n\t\t\tacc: %d\ntotal: %d\n\n\n\n", numberTop, bot, acc, total);
 						// for range calculations.
 	float diff = numberTop - bot;		// take the difference (the range)
 
 	diff *= acc;				// multiply it by the accumulated
 
-	diff = ceil(diff/total);		// divide by the total count of the characters
+	diff = diff / total;
+	printf("\t\t\tfloat: %f\n\n\n", diff);
+
+	diff = ceil(diff);		// divide by the total count of the characters
+
+	printf("\t\t\tfloat: %f\n\n\n", diff);
 
 	diff += bot;				// and add the bottom back in for actual range.
 
