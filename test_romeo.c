@@ -7,10 +7,14 @@
 # include "model.h"
 # include "AR.h"
 
+# include "IOtester.h"
+
 int main(void)
 {
 
 	/**
+	 *
+	//encode things
 	Model *m = newModel();
 
 	printf("%d\n", (m->range)->top);
@@ -76,9 +80,11 @@ int main(void)
 	}
 	
 
-	cleanup(m, output);  
+	cleanup(m, output); 
 	*/
 
+	/**
+	 * decode things
 	Model *m = newModel();
 	uint16_t number = 24832;
 	(m->freq)['b'] += 1;
@@ -91,6 +97,37 @@ int main(void)
 
 	printf("%c\n", ch);
 	printf("%d\n%d\n", outbits, pending);
+	*/
+
+	uint32_t preEx = 0;
+
+	preEx = stitch(preEx, 'a');
+
+	printf("preEx now : %d\n", preEx);
+
+	preEx = stitch(preEx, 'b');
+
+	printf("preEx now : %d\n", preEx);
+
+	preEx = stitch(preEx, 'c');
+
+	printf("preEx now : %d\n", preEx);
+
+	preEx = stitch(preEx, 'd');
+
+	printf("preEx now : %d\n", preEx);
+
+	uint16_t parsed = parse(preEx, 0); 
+
+	printf("parsed : %d\n", parsed);
+
+	preEx = stitch(preEx, 'e');
+
+	printf("preEx now: %d\n", preEx);
+
+	parsed = parse(preEx, 12);
+
+	printf("parsed : %d\n", parsed);
 
 	return 0;
 }
