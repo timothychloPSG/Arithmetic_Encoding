@@ -83,12 +83,12 @@ void cleanup (Model *mod, FILE *f)
 	{
 		prevbit = bit;
 		bit = getBit(BOT, i, (mod->range));
-		printf("%u",bit);
+		//printf("%u",bit);
 		if(i == 1 && pending != 0)
 		{
 			for(int j = i; j < (i+pending); j++)
 			{
-				printf("%u", !prevbit);
+				//printf("%u", !prevbit);
 				chBlock(!prevbit, f, (mod->range));
 			}
 
@@ -162,7 +162,7 @@ char decode(Model *m, uint32_t number, uint8_t *outbits, uint8_t *pending)
 
 	updateRange(m, NULL, newtop-1, newbot, ch, outbits, pending);
 
-	printf("\n\n\n%d\n\n", m->total);
+	//printf("\n\n\n%d\n\n", m->total);
 
 	return ch;
 

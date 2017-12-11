@@ -15,10 +15,10 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror -pedantic -std=c99
 OBJECTS = coder.o model.o AR.o
 OBJECTS1 = test test.o
-OBJECTS2 = IOtester IOtester.o 
+OBJECTS2 = ARcoder ARcoder.o 
 
 .PHONY	:	all
-all	:	coder.o model.o AR.o IOtester.o test.o IOtester test
+all	:	coder.o model.o AR.o ARcoder.o ARcoder
 
 test	:
 	$(CC) $(CFLAGS) -o $(OBJECTS1) $(OBJECTS) -lm
@@ -26,11 +26,11 @@ test	:
 test.o 	:	test.c
 	$(CC) $(CFLAGS) -c test.c 
 
-IOtester:	
+ARcoder:	
 	$(CC) $(CFLAGS) -o $(OBJECTS2) $(OBJECTS) -lm
 
-IOtester.o 	:	IOtester.c
-	$(CC) $(CFLAGS) -c IOtester.c
+ARcoder.o 	:	ARcoder.c
+	$(CC) $(CFLAGS) -c ARcoder.c
 
 model.o 	:	model.c
 	$(CC) $(CFLAGS) -c model.c
