@@ -59,7 +59,7 @@ static inline uint16_t calcRange(uint16_t top, uint16_t bot, uint32_t total, uin
 {
 	uint32_t numberTop = top + 1;		// since we're converting it to "actual numbers"
 
-	printf("\n\n\n\t\t\ttop : %d\n\t\t\tbot: %d\n\t\t\tacc: %d\n\n\n\n", numberTop, bot, acc);
+	// printf("\n\n\n\t\t\ttop : %d\n\t\t\tbot: %d\n\t\t\tacc: %d\n\n\n\n", numberTop, bot, acc);
 						// for range calculations.
 	float diff = numberTop - bot;		// take the difference (the range)
 
