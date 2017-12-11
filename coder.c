@@ -42,11 +42,13 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 	bool output = true;
 	bool pending = true;
 
+
 	for (int i = 0; i < 16; i++)							// looping through 16 bits only -- the original top and bottom
 	{										// so that we don't forever go through the newly added bits
 
 		uint8_t top = getBit(TOP, i, code);					// get the value of the top bit
 		uint8_t bot = getBit(BOT, i, code);					// get the value of the bottom bit
+
 		
 
 		//** ======= for converging bits ========== **//
@@ -60,7 +62,7 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 				for (int j = 0; j < (code->pending); j++)		// and for the rest of the pending bits
 				{							// (if there are any) clear more bits
 
-					// printf("pending\n");
+					printf("pending\n");
 					chBlock(CLR, f, code);
 				}
 
@@ -137,9 +139,10 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 		}
 
 		// for debugging purposes
-		// printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
+		printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
 
 	}
+
 
 	writtenbits = 16 - writtenbits;
 

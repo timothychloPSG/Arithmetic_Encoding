@@ -114,6 +114,7 @@ int main(int argc, char* argv[])
 		Model *encodeModel = newModel();
 		for(int i = 0; i < lSize; i++)
 		{
+			printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n", (encodeModel->range)->top, (encodeModel->range)->bot); 
 			encode(encodeModel, outputFile, buffering[i], &outbits, &pending);
 		}
 		cleanup(encodeModel, outputFile);
@@ -129,7 +130,9 @@ int main(int argc, char* argv[])
 			tracker = stitch(tracker, buffering[i]);	// Stitch together the first 4 chars in tracker
 			i++;
 		}
+		printf("first tracker: %u\n", tracker);
 		uint8_t replacement = buffering[i];
+		printf("first replacement: %u\n", replacement); 
 		uint16_t cursor = 0;
 
 		for(int j = 5; j < lSize; j++)
@@ -137,7 +140,7 @@ int main(int argc, char* argv[])
 			uint8_t outbits = 0;
 			uint8_t pending = 0;
 			uint16_t charBuffer = parse(tracker, cursor);
-				if (pending > 0) 	// Pending bits present from previous decode
+				if (pending != 0) 	// Pending bits present from previous decode
 				{
 					uint16_t buffer = 0;
 					uint8_t bit = get(charBuffer, 0); //write the first character 
@@ -147,7 +150,7 @@ int main(int argc, char* argv[])
 					}
 					uint8_t cursor2 = 1;
 
-					for(int x = 1; x < 16; x++)
+					for(uint8_t x = 1; x < 16; x++)
 					{
 						if(pending < x)
 						{
@@ -160,10 +163,10 @@ int main(int argc, char* argv[])
 						}
 					}		
 					
-					for(int x = (cursor + 16); x < (cursor + 16 + pending); x++)
+					for(uint8_t x = (cursor + 16); x < (cursor + 16 + pending); x++)
 					{
 						bit = get32(tracker, x);
-						printf("Bit %u\n", bit);
+						// printf("Bit %u\n", bit);
 						if(bit)
 						{
 							setbit(&buffer, cursor2);
@@ -172,8 +175,9 @@ int main(int argc, char* argv[])
 					}	
 					charBuffer = buffer;
 				} 
-			char *decodedChar = decode(decodingModel, charBuffer, &outbits, &pending);
-			fwrite(decodedChar, sizeof(char), 1, outputFile);
+			char decodedChar = decode(decodingModel, charBuffer, &outbits, &pending);
+			printf("decodedChar: %c", decodedChar);
+			fwrite(&decodedChar, sizeof(char), 1, outputFile);
 			cursor+=outbits;
 			if (cursor >= 8)
 			{
@@ -187,6 +191,7 @@ int main(int argc, char* argv[])
 				{
 					replacement = buffering[i+1];
 				}
+				printf("new replacement: %u\n", replacement);
 				i++;
 			}
 		}
