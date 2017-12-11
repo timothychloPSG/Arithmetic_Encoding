@@ -120,9 +120,7 @@ void cleanup (Model *mod, FILE *f)
 char decode(Model *m, uint32_t number, uint8_t *outbits, uint8_t *pending)
 {
 
-	//top bot total acc
-	
-
+	printf("\n\n\t\tnumber: %u\n", number);
 	uint16_t acc = 0;
 	uint16_t range = 0;
 	uint8_t ch = 0;
@@ -143,6 +141,8 @@ char decode(Model *m, uint32_t number, uint8_t *outbits, uint8_t *pending)
 	uint16_t newtop = calcRange(getTop(m), getBot(m), m->total, acc);
 
 	updateRange(m, NULL, newtop, newbot, ch, outbits, pending);
+
+	printf("\n\n\n%d\n\n", m->total);
 
 	return ch;
 

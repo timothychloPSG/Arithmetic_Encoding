@@ -25,19 +25,6 @@
 
 # include "libfiles.h"
 
-# ifndef _TOPBOT_TRUEFALSE				// for set and clear functions to make more sense
-# define TOP true 					// reading wise.
-# define BOT false 
-# endif 
-
-# ifndef _BLOCK_SETCLEAR				// this is for chBlock function
-# define SET true
-# define CLR false
-# endif
-
-# ifndef MAXTOP						// for setting top as all 1's when
-# define MAXTOP (uint16_t)65535				// we have a 16 bit number
-# endif
 
 typedef struct Range Coder;					
 

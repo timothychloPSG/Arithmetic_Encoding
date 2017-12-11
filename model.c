@@ -65,8 +65,8 @@ void updateRange(Model *ED, FILE *f, uint16_t top, uint16_t bot, char c, uint8_t
 
 	updateStatus(code, f, outbits, pending);
 
-	(ED->freq[(uint8_t)c])++;
-	(ED->total)++;
+	(ED->freq[(uint8_t)c]) = (ED->freq[(uint8_t)c]) + 1;
+	(ED->total) = (ED->total) + 1;
 }
 
 
