@@ -125,12 +125,10 @@ char decode(Model *m, uint32_t number, uint8_t *outbits, uint8_t *pending)
 
 	uint16_t acc = 0;
 	uint16_t range = 0;
-	uint16_t followRange = 0;
 	uint8_t ch = 0;
 
 	while(number > range)							// compares all bottoms until one of them's bigger than the number
 	{
-		followRange = range;
 		acc = getSegBot(m, ch);
 		range = calcRange(getTop(m), getBot(m), m->total, acc);
 		ch += 1;
