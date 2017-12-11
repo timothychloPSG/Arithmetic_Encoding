@@ -127,6 +127,7 @@ int main(int argc, char* argv[])
 	//-----------------------------------------------------------------------------
 	if (decoding )
 	{
+		Model *decodingModel = newModel();
 		uint32_t tracker = 0;
 		uint8_t i = 0;
 		while (i < 4)
@@ -136,13 +137,28 @@ int main(int argc, char* argv[])
 		}
 		uint8_t replacement = buffering[i]
 		uint16_t cursor = 0;
-		uint16_t charBuffer = parse(tracker, cursor);
 		for(int j = 5; j < lSize; j++)
 		{
+			uint8_t outbits = 0;
+			uint8_t pending = 0;
 			uint16_t charBuffer = parse(tracker, cursor);
-			char something = decode(charBuffer, )
-			cursor++;
-			if (cursor == 8)
+			if (pending > 0) 	// Pending bits present from previous decode
+			{
+				uint16_t buffer = 0;
+				for(int x = 1; x < 16; i++)
+				{
+					if(pending < x)
+					{
+						bit = (charBuffer >> (15 - i) & 1);
+					}
+				}
+				//write the first character 
+			} 
+			char decodedChar = decode(decodingModel, charBuffer, &outbits, &pending);
+			fwrite(&decodedChar, sizeof(char), 1, outputFile);
+			// write decodedChar to the character
+			cursor+=outbits;
+			if (cursor >= 8)
 			{
 				cursor-=8;
 				tracker = stitch(tracker, replacement);

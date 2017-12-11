@@ -44,12 +44,12 @@ static inline uint8_t get(uint16_t number, uint8_t index)
 	return (number >> (15 - index) & 1);
 }
 
-static inline void set(uint16_t *number, uint8_t index)
+static inline void setbit(uint16_t *number, uint8_t index)
 {
 	(*number) = (*number) | (1 << (15 - index)) ; 
 }
 
-static inline void clr(uint16_t *number, uint8_t index)
+static inline void clrbit(uint16_t *number, uint8_t index)
 {
 	(*number) = (*number) & (MAXTOP ^ (1 << (15 - index)));
 }
