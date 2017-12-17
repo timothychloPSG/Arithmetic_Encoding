@@ -114,7 +114,8 @@ int main(int argc, char* argv[])
 		Model *encodeModel = newModel();
 		for(int i = 0; i < lSize; i++)
 		{
-			//printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n\t\tbuffering : %d\n\n", (encodeModel->range)->top, (encodeModel->range)->bot, buffering[i]); 
+			printf("\n\n\t\t\t %dth \n\n", i);
+			printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n\t\tbuffering : %d\n\n", (encodeModel->range)->top, (encodeModel->range)->bot, buffering[i]); 
 			encode(encodeModel, outputFile, buffering[i], &outbits, &pending);
 		}
 		cleanup(encodeModel, outputFile);
@@ -146,53 +147,45 @@ int main(int argc, char* argv[])
 		uint8_t outbits = 0;
 		uint8_t pending = 0;
 		uint16_t charBuffer = 0;
+		uint32_t counter = 0;
+		uint8_t cursor2 = 0;
 
-		while(true)//for(int j = 5; j < lSize; j++)
+		while(true)
 		{
 			charBuffer = parse(tracker, cursor);
 
 			//printf("\n\n%u\n\n", charBuffer);
+			
+			printf("%d\n\n", pending);
+
+			printf("\n\n\t\tprev buffer : %d\n\n", charBuffer);
+
+
+			printf("\n\n\t\t\t\t\tcursor: %u\n\n\t\t\t\ttracker: %u\n\n", cursor, tracker);
 
 			if (pending != 0) 	// Pending bits present from previous decode
 			{
 				uint16_t buffer = 0;
-				uint8_t bit = get(charBuffer, 0); //write the first character 
-				if (bit)
+				uint8_t bit = get(charBuffer, 0); 
+
+				cursor2 = cursor + pending + 1;		// starting position
+
+				buffer = parse(tracker, cursor2);
+				buffer = buffer >> 1;
+				//printf("cursor : %u, cursor2 : %u", cursor, cursor2);
+
+				if(bit)
 				{
 					setBit(&buffer, 0);
 				}
-				uint8_t cursor2 = 1;
-
-				for(uint8_t x = 1; x < 16; x++)
-				{
-					if(pending < x)
-					{
-						bit = get(charBuffer, x);
-						if (bit)
-						{
-							setBit(&buffer, cursor2);
-						}
-						cursor2++;
-					}
-				}		
-					
-
-				for(uint8_t x = (cursor + 16); x < (cursor + 16 + pending); x++)
-				{
-					bit = get32(tracker, x);
-					// printf("Bit %u\n", bit);
-					if(bit)
-					{
-						setBit(&buffer, cursor2);
-					}
-					cursor2++;
-				}	
 				charBuffer = buffer;
 
 
 			}
 
-			//printf("\n\n\t\tnew buffer : %d\n\n", charBuffer);
+			printf("\n\n\t\t\t %dth \n\n", counter);
+			counter++;
+			printf("\n\n\t\tnew buffer : %d\n\n", charBuffer);
 
 			char decodedChar = decode(decodingModel, charBuffer, &outbits, &pending);
 
