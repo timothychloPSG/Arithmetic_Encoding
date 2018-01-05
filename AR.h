@@ -26,9 +26,9 @@
 
 //** =============== function headers ================= **//
 
-void encode(Model *, FILE *, char, uint8_t *, uint8_t *);
+void encode(Model *, FILE *, char, uint8_t *, uint8_t *, bool *);
 void cleanup(Model *, FILE *);
-char decode(Model *, uint32_t, uint8_t *, uint8_t *);
+char decode(Model *, uint32_t, uint8_t *, uint8_t *, bool *);
 
 
 //** =============== static inlines ==================== **//

@@ -42,6 +42,14 @@
 # define MAXTOP (uint16_t)65535				// we have a 16 bit number
 # endif
 
+# ifndef DEBUG_0
+# define DEBUG_0 false
+# endif
+
+# ifndef DEBUG_1
+# define DEBUG_1 false
+# endif
+
 static inline uint8_t get(uint16_t number, uint8_t index)
 {
 	return (number >> (15 - index) & 1);

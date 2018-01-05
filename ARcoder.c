@@ -111,12 +111,16 @@ int main(int argc, char* argv[])
 	{	
 		uint8_t outbits = 0;
 		uint8_t pending = 0;
+		bool throw = false; 
 		Model *encodeModel = newModel();
 		for(int i = 0; i < lSize; i++)
 		{
-			printf("\n\n\t\t\t %dth \n\n", i);
-			printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n\t\tbuffering : %d\n\n", (encodeModel->range)->top, (encodeModel->range)->bot, buffering[i]); 
-			encode(encodeModel, outputFile, buffering[i], &outbits, &pending);
+			if(DEBUG_0)
+			{
+				printf("\n\n\t\t\t %dth \n\n", i);
+				printf("\n\n\t\ttop: %d\n\n\t\tbot: %d\n\n\t\tbuffering : %d\n\n", (encodeModel->range)->top, (encodeModel->range)->bot, buffering[i]); 
+			}
+			encode(encodeModel, outputFile, buffering[i], &outbits, &pending, &throw);
 		}
 		cleanup(encodeModel, outputFile);
 	}
@@ -127,41 +131,80 @@ int main(int argc, char* argv[])
 
 	if (decoding)
 	{
+		/**
 		Model *decodingModel = newModel();
 
+		*/
 		uint32_t tracker = 0;
+		uint32_t rpc = 0;
 		uint8_t i = 0;
+		uint8_t replacement;
+		//bool printed = false;
 
+		
 		while (i < 4)
 		{
 			tracker = stitch(tracker, buffering[i]);	// Stitch together the first 4 chars in tracker
 			i++;
 		}
-		//printf("first tracker: %u\n", tracker);
-		//
-		uint8_t replacement = buffering[i];
+
+		printf("%u\n\n", tracker);
+
 		
-		//printf("first replacement: %u\n", replacement); 
+										if(DEBUG_0)
+										{
+											printf("\n\n\t\t\t\t\tfirst tracker: %u to %u\n", rpc, rpc+4);
+										}
+	
+		replacement = buffering[i];
 		
+										if(DEBUG_0)
+										{
+											printf("first replacement: %u\n", replacement); 
+										}
+
+		/**
 		uint16_t cursor = 0;
 		uint8_t outbits = 0;
 		uint8_t pending = 0;
 		uint16_t charBuffer = 0;
 		uint32_t counter = 0;
 		uint8_t cursor2 = 0;
+		
+		bool stitched = true;
+		*/
 
-		while(true)
+		for(int a = i; a < lSize; a++)//while(true)
 		{
+					replacement = buffering[a];
+					/**
+					if(stitched)
+					{
+						stitched = false;
+						printf("%u ", replacement);
+
+					}*/
+					printf("%u ", replacement);
+					//tracker = stitch(tracker, replacement);
+					//printf("%u\n", tracker);
+			
+			/**
+
 			charBuffer = parse(tracker, cursor);
 
-			//printf("\n\n%u\n\n", charBuffer);
 			
-			printf("%d\n\n", pending);
+										if(DEBUG_0)
+										{
+			
+											printf("%d\n\n", pending);
 
-			printf("\n\n\t\tprev buffer : %d\n\n", charBuffer);
+											printf("\n\n\t\tprev buffer : %d\n\n", charBuffer);
 
 
-			printf("\n\n\t\t\t\t\tcursor: %u\n\n\t\t\t\ttracker: %u\n\n", cursor, tracker);
+											printf("\n\n\t\t\t\t\tcursor: %u\n\n\t\t\t\ttracker: %u\n\n", cursor, tracker);
+											printf("\n\n\t\t\t\t\ttracker num: %u to %u", rpc, rpc+4);
+										}
+
 
 			if (pending != 0) 	// Pending bits present from previous decode
 			{
@@ -172,37 +215,53 @@ int main(int argc, char* argv[])
 
 				buffer = parse(tracker, cursor2);
 				buffer = buffer >> 1;
-				//printf("cursor : %u, cursor2 : %u", cursor, cursor2);
 
 				if(bit)
 				{
 					setBit(&buffer, 0);
 				}
 				charBuffer = buffer;
-
-
 			}
 
-			printf("\n\n\t\t\t %dth \n\n", counter);
+										if(DEBUG_0)
+										{		
+
+											printf("\n\n\t\t\t %dth \n\n", counter);
+											printf("\n\n\t\tnew buffer : %d\n\n", charBuffer);
+										}
+
 			counter++;
-			printf("\n\n\t\tnew buffer : %d\n\n", charBuffer);
 
-			char decodedChar = decode(decodingModel, charBuffer, &outbits, &pending);
+			char decodedChar = decode(decodingModel, charBuffer, &outbits, &pending, &printed);
 
+			if(DEBUG_0)
+			{
+				printf("\n%c\n", decodedChar);
+			}
 			if(decodedChar == '\0')
 			{
+				printf("sss");
 				break;
 			}
-			//printf("%c", decodedChar);
+
+			else if(decodedChar == -1)
+			{
+				printf("we've reached an error.\n");
+				exit(0);
+			}
+
+
 			fwrite(&decodedChar, sizeof(char), 1, outputFile);
 
-			//printf("\n\noutbits : %d\n\n", outbits);
 			cursor+=outbits;
 
 
 
-			if (cursor >= 8)
+			if (printed)//cursor >= 8)
 			{
+				stitched = true;
+				printed = false;
+				rpc += 1;
 				cursor-=8;
 				tracker = stitch(tracker, replacement);
 				if(buffering[i+1] == 0)
@@ -213,9 +272,8 @@ int main(int argc, char* argv[])
 				{
 					replacement = buffering[i+1];
 				}
-				//printf("new replacement: %u\n", replacement);
 				i++;
-			}
+			}*/
 
 		}
 	

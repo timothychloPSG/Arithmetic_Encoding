@@ -39,6 +39,10 @@
 # define MAXTOP (uint16_t)65535				// we have a 16 bit number
 # endif
 
+# ifndef MAXSPACE
+# define MAXSPACE (uint8_t)8
+# endif
+
 typedef struct Range Coder;					
 
 struct Range
@@ -47,13 +51,14 @@ struct Range
 	uint16_t bot;					// the bottom
 	uint16_t pending;				// pending bits
 	uint8_t block;					// block for blockifying output
+	uint32_t bpc;
 							// we decided the output should be readable characters.
 	uint32_t space;					// space left on the block out of 32
 } ;
 
 /** ================ function headers ====================== **/
 
-void updateStatus(Coder *, FILE *, uint8_t *, uint8_t *);
+void updateStatus(Coder *, FILE *, uint8_t *, uint8_t *, bool *);
 void printStatus(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, bool, uint16_t, uint8_t, uint8_t);
 
 /** =============== static inline functions ================ **/
@@ -83,7 +88,8 @@ static inline Coder *newCoder()
 	code->bot = 0;
 	code->pending = 0;
 	code->block = 0;
-	code->space = 8;
+	code->bpc = 0;
+	code->space = MAXSPACE;
 	return code;
 }
 
@@ -202,7 +208,7 @@ static inline void clr(bool top, uint8_t index, Coder *code)
  * Has to include file *f later for writing
  *
  */
-static inline void chBlock (bool sett, FILE *f, Coder *code)
+static inline void chBlock (bool sett, FILE *f, Coder *code, bool *printed)
 {
 
 	if (code-> space < 1)							// if there are no more spaces left
@@ -210,10 +216,18 @@ static inline void chBlock (bool sett, FILE *f, Coder *code)
 
 		if(f != NULL)
 		{
-			fwrite(&(code->block), sizeof(uint8_t), 1, f);			// write block to file
+			printf("%u ", code->block);
+			fwrite(&(code->block), sizeof(uint8_t), 1, f);		// write block to file
 		}
 
-		(code->space) = 8;						// reset block space to 8
+		(*printed) = true;
+		if(DEBUG_0)
+		{
+			printf("\n\t\t\t\t\tprinted %dth block\n\n", code->bpc);
+		}
+		code->bpc = code->bpc + 1;
+
+		(code->space) = MAXSPACE;					// reset block space to 8
 		(code->block) = 0;						// reset block to 0
 	}
 

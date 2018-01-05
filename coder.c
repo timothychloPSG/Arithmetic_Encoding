@@ -30,14 +30,13 @@
  *
  * @param code the coder struct
  */
-void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
+void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits, bool *printed)
 {
 	uint16_t newtop = 0;
 	uint16_t newbot = 0;
 	uint8_t writtenbits = 0;
 
 	(*outbits) = 0;
-	//(*pendingbits) = 0;
 
 	bool output = true;
 
@@ -55,14 +54,31 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 		{
 			if (bot)							// convergence towards 1
 			{
-				chBlock(SET, f, code);					// set a bit in the block
-				printf("writing 1\n");
+				chBlock(SET, f, code, printed);				// set a bit in the block
+				if(DEBUG_0)
+				{
+					printf("writing 1\n");
+				}
+				if(DEBUG_1)
+				{
+					printf("1");
+				}
+
 				(*outbits) += 1;
 				for (int j = 0; j < (code->pending); j++)		// and for the rest of the pending bits
 				{							// (if there are any) clear more bits
 
-					printf("writing pending\n");
-					chBlock(CLR, f, code);
+					if(DEBUG_0)
+					{
+						printf("pending\n");
+					}
+					if(DEBUG_1)
+					{
+						printf("0");
+					}
+					chBlock(CLR, f, code, printed);
+					
+
 					(*outbits) += 1;
 				}
 
@@ -71,13 +87,31 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 			}
 			else								// convergence towards 0
 			{
-				chBlock(CLR, f, code);					// clear a bit in the block
-				printf("writing 0\n");
+				chBlock(CLR, f, code, printed);				// clear a bit in the block
+				
+				if(DEBUG_0)
+				{
+					printf("writing 0\n");
+				}
+				if(DEBUG_1)
+				{
+					printf("0");
+				}
+
 				(*outbits) += 1;
 				for (int j = 0; j < (code->pending); j++)		// deal with pending bits
 				{
-					printf("pending\n");
-					chBlock(SET, f, code);
+					if(DEBUG_0)
+					{
+						printf("pending\n");
+					}
+					if(DEBUG_1)
+					{
+						printf("1");
+					}
+
+					chBlock(SET, f, code, printed);
+
 					(*outbits) += 1;
 				}
 				code->pending = 0;
@@ -105,7 +139,11 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 		//** ========== for pending bits ========== **//
 		else if( top == 0 && bot == 1 && !output && writtenbits == 1)
 		{
-			printf("count a pending bit\n");
+			if(DEBUG_0)
+			{
+				printf("count a pending bit\n");
+			}
+
 			(*pendingbits) += 1;
 
 			code->pending+=1;						// increment the number of pending bits
@@ -134,8 +172,10 @@ void updateStatus(Coder * code, FILE *f, uint8_t *outbits, uint8_t *pendingbits)
 			
 		}
 
-		// for debugging purposes
-		// printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
+		if(DEBUG_0)
+		{
+			printStatus(code->top, code->bot, writtenbits, newtop, newbot, output, code->pending, top, bot);
+		}
 
 	}
 
